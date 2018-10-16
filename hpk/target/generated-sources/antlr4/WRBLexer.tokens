@@ -7,8 +7,9 @@ SUB=6
 BRACKET_BEGIN=7
 BRACKET_END=8
 ASSIGN=9
-NEWLINE=10
-WS=11
+END=10
+NEWLINE=11
+WS=12
 '+'=3
 '*'=4
 '/'=5
@@ -16,3 +17,4 @@ WS=11
 '('=7
 ')'=8
 '='=9
+';'=10

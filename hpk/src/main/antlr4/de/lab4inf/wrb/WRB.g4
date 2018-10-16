@@ -17,8 +17,8 @@ run returns [double v]
 	;
 
 statement returns [double v]
-	: exp=expr NEWLINE							{$v = $exp.value;}
-	| assign NEWLINE							
+	: exp=expr (NEWLINE | END)					{$v = $exp.value;}
+	| assign (NEWLINE | END)							
 	| NEWLINE
 	;
 
@@ -41,7 +41,7 @@ assign
 // LEXER RULES
 //
 
-NO:				[0-9]+('.'[0-9]+)?;
+NO:				'-'?[0-9]+('.'[0-9]+)?;
 
 ID:				([A-Z] | [a-z] | '_')+([A-Z] | [a-z] | [0-9] | '_')*;
 
@@ -54,6 +54,8 @@ BRACKET_BEGIN:	'(';
 BRACKET_END:	')';
 
 ASSIGN:			'=';
+
+END:			';';
 
 NEWLINE:		'\r'? '\n' ;
 WS:				(' ' | '\t') ->skip;
