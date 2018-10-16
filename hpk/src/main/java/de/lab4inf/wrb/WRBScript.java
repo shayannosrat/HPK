@@ -12,9 +12,9 @@ import org.antlr.v4.runtime.CommonTokenStream;
 public class WRBScript implements Script {
 	private WRBParser.RunContext r;
 	private WRBParser parser = new WRBParser(null);
-	private WRBObserver ob = new WRBObserver();
+	private final WRBObserver ob = new WRBObserver();
 	
-	static double lastResult;
+	private static double lastResult;
 	
 	public WRBScript() {}
 	
