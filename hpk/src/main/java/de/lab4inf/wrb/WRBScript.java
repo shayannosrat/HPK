@@ -47,7 +47,7 @@ public class WRBScript implements Script {
 			lastResult = Double.valueOf(ob.visitRun(r));// Ergebnis ausgeben
 			
 		} catch(Exception e) {
-			System.err.println("Fehler: " + e.toString());
+			throw new IllegalArgumentException("Ungültige Eingabe");
 		}
 		return lastResult;
 	}
