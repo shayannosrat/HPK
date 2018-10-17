@@ -70,7 +70,7 @@ public class WRBScript implements Script {
      * @return set with the variables names
      */
 	public Set<String> getVariableNames() {
-		return new HashSet<String>();
+		return parser.getMemory().keySet();
 	}
 		
 	/**

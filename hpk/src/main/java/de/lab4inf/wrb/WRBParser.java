@@ -84,6 +84,9 @@ public class WRBParser extends Parser {
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
+	public java.util.HashMap<String, Double> getMemory(){
+		return this.memory;
+	}
 	public static class RunContext extends ParserRuleContext {
 		public double v;
 		public StatementContext s;
