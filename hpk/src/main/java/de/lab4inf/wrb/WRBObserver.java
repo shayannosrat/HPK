@@ -125,11 +125,10 @@ public class WRBObserver extends WRBBaseVisitor<Double> {
 	
 	@Override
 	public Double visitEvalUserFunc(WRBParser.EvalUserFuncContext ctx) {
-		HashMap<String, Double> scope = new HashMap<>();
+		
 		List<WRBParser.ExprContext> exp = ctx.p.expr();
 		System.out.println("list: " + exp);
 		double[] params = new double[exp.size()];
-		String[] paramNames = funcMemory.get(ctx.i.getText()).getParamNames();
 		int i = 0;
 		for(WRBParser.ExprContext c : exp) {
 			params[i] = visit(c);
@@ -137,17 +136,7 @@ public class WRBObserver extends WRBBaseVisitor<Double> {
 			
 			i++;
 		}
-		i=0;
-		for(double arg : params) {
-			scope.put(paramNames[i], arg);
-			System.out.println(paramNames[i] + " , " + arg);
-			varMemory.put(paramNames[i], arg);
-			i++;
 			
-		}
-		
-		
-		
 		return funcMemory.get(ctx.i.getText()).eval(params);
 		
 	}
@@ -259,7 +248,7 @@ public class WRBObserver extends WRBBaseVisitor<Double> {
 		}
 		
 		System.out.println("visit Assign Func");
-		System.out.println(ctx.expr());
+		System.out.println(ctx.expr().toStringTree());
 		System.out.println(p);
 		funcMemory.put(id, new WRBFunction(params, ctx.expr()));
 		varMemory.putAll(varMemoryTemp);

@@ -29,23 +29,8 @@ public class WRBFunction implements Function {
 			
 		}
 		
-		return eval(scope);
-	}
-	
-	public double eval(HashMap<String, Double> sc) {
-		System.out.println("bin in scope");
-		System.out.println(scope);
 		
-		double[] evalValue = new double[sc.size()];
-		double[] params = new double[sc.size()];
-		Set<String> keys = sc.keySet();
-		int i = 0;
-		
-		for(String key : keys) {
-			params[i] = sc.get(key);
-			i++;
-		}
-		return ob.visit(ctx.expr()) ;
+		return ob.visit(ctx.expr());
 	}
 
 }
