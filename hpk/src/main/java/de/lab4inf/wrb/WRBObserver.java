@@ -273,8 +273,11 @@ public class WRBObserver extends WRBBaseVisitor<Double> {
 			}
 				
 		}
+		WRBFunction fct = new WRBFunction(params, ctx.expr(), varMemory);
+		
 		System.out.println("ASSIGNED FUNC" + varMemory);
-		funcMemory.put(id, new WRBFunction(params, ctx.expr(), varMemory));
+		funcMemory.put(id, fct);
+		fct.getFunctionMemory(funcMemory);
 		System.out.println("OB: " + funcMemory);
 		varMemory.putAll(varMemoryTemp);
 		return Double.valueOf(1);
