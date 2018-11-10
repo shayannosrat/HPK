@@ -27,17 +27,21 @@ public class WRBScript implements Script {
 	public double parse(String definition) throws IllegalArgumentException{
 		CharStream inputStream = CharStreams.fromString(definition+'\n');
 		WRBLexer lexer = new WRBLexer(inputStream);
+		lexer.removeErrorListeners();
+		lexer.addErrorListener(ThrowingErrorListener.INSTANCE);
 		CommonTokenStream tokenStream = new CommonTokenStream(lexer);
 		
 		parser.setTokenStream(tokenStream);
+		parser.removeErrorListeners();
+		parser.addErrorListener(ThrowingErrorListener.INSTANCE);
 		
 		try {
 			r = parser.run(); // Token-Stream parsen
 			lastResult = Double.valueOf(ob.visitRun(r)); // Ergebnis ausgeben
-			
-		} catch(Exception e) {
-			throw new IllegalArgumentException("Ungültige Eingabe");
+		} catch (Exception e) {
+			throw new IllegalArgumentException("Ungltige Eingabe!");
 		}
+
 		return lastResult;
 	}
 	
@@ -51,17 +55,21 @@ public class WRBScript implements Script {
 	public double parse(InputStream defStream) throws IOException {
 		CharStream inputStream = CharStreams.fromStream(defStream);
 		WRBLexer lexer = new WRBLexer(inputStream);
+		lexer.removeErrorListeners();
+		lexer.addErrorListener(ThrowingErrorListener.INSTANCE);
 		CommonTokenStream tokenStream = new CommonTokenStream(lexer);
 		
 		parser.setTokenStream(tokenStream);
+		parser.removeErrorListeners();
+		parser.addErrorListener(ThrowingErrorListener.INSTANCE);
 		
 		try {
 			r = parser.run(); // Token-Stream parsen
 			lastResult = Double.valueOf(ob.visitRun(r)); // Ergebnis ausgeben
-			
-		} catch(Exception e) {
-			throw new IllegalArgumentException("Ungültige Eingabe");
+		} catch (Exception e) {
+			throw new IllegalArgumentException("Ungltige Eingabe!");
 		}
+			
 		return lastResult;
 	}
 	
@@ -70,7 +78,7 @@ public class WRBScript implements Script {
      * @return set with the variables names
      */
 	public Set<String> getVariableNames() {
-		return parser.getMemory().keySet();
+		return ob.varMemory.keySet();
 	}
 		
 	/**
@@ -97,14 +105,16 @@ public class WRBScript implements Script {
      * @param name of the function to be unique
      * @param fct to add 
      */
-	public void setFunction(String name, Function fct) {}
+	public void setFunction(String name, WRBFunction fct) {
+		ob.funcMemory.put(name, fct);
+	}
 	
 	/**
      * Get all script known function names.
      * @return set with the function names
      */
 	public Set<String> getFunctionNames() {
-		return new HashSet<String>();
+		return ob.funcMemory.keySet();
 	}
 	
 	/**
@@ -112,7 +122,10 @@ public class WRBScript implements Script {
      * @param name of the function
      * @return an implementation
      */
-	public Function getFunction(String name) {
-		return null;
+	public WRBFunction getFunction(String name) throws IllegalArgumentException{
+		if(ob.funcMemory.containsKey(name))
+			return ob.funcMemory.get(name);
+		else
+			throw new IllegalArgumentException("Funktion existiert nicht!");
 	}
 }
