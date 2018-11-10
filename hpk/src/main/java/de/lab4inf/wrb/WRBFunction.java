@@ -13,8 +13,7 @@ public class WRBFunction implements Function {
 		this.paramNames = paramNames;
 		this.ctx = ctx;
 		ob.varMemory = varMemory;
-		System.out.println("FUNC: " +ob.funcMemory);
-		System.out.print(varMemory);
+		
 	}
 	
 	public String[] getParamNames() {
@@ -24,8 +23,6 @@ public class WRBFunction implements Function {
 	@Override
 	public double eval(double... args) {
 		scope.putAll(ob.varMemory);
-		System.out.println("FUNC: " +ob.funcMemory);
-		System.out.println("1.eval DEBUG: " + ob.varMemory);
 		int i = 0;
 		for(double arg : args) {
 			scope.put(paramNames[i], arg);
@@ -33,7 +30,7 @@ public class WRBFunction implements Function {
 			
 		}
 		
-		System.out.println("SCOPE: " + scope);	
+		
 		return eval(scope);
 	}
 
