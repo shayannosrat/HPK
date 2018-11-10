@@ -34,14 +34,12 @@ public class App {
 			parser.setInputStream(tokenStream); // neuen Token-Stream an parser geben
 			parser.removeErrorListeners();
 			parser.addErrorListener(ThrowingErrorListener.INSTANCE);
-			try {
+			
 				r = parser.run(); // Token-Stream parsen
 				Double res = Double.valueOf(ob.visitRun(r));// Ergebnis ausgeben
 				System.out.println("Visitor: " + res);
 				
-			} catch(Exception e) {
-				System.err.println("Fehler: " + e.toString());
-			}
+			
 			
 			expr = br.readLine(); // nchste Zeile lesen
 			line++;
