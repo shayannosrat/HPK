@@ -6,7 +6,7 @@ import java.util.List;
 public class WRBObserver extends WRBBaseVisitor<Double> {
 	
 	public HashMap<String, Double> varMemory = new HashMap<>();
-	public static HashMap<String, WRBFunction> funcMemory = new HashMap<>();
+	public HashMap<String, WRBFunction> funcMemory = new HashMap<>();
 	
 	@Override
 	public Double visitStatement(WRBParser.StatementContext ctx) {

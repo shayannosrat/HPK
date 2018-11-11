@@ -128,4 +128,24 @@ public class WRBScript implements Script {
 		else
 			throw new IllegalArgumentException("Funktion existiert nicht!");
 	}
+	
+	@Override
+	public Script concat(Script that) {
+		Script ret = new WRBScript();
+		
+		// old fashion JDK 1.5 for-loop
+        for (String varName : that.getVariableNames()) {
+            double var = that.getVariable(varName);
+            ret.setVariable(varName, var);
+        }
+        // new style for-each-loop with lambda expression
+        this.getFunctionNames().forEach((fctName) -> {
+            ret.setFunction(fctName, this.getFunction(fctName));
+        });
+        that.getFunctionNames().forEach((fctName) -> {
+            ret.setFunction(fctName, that.getFunction(fctName));
+        });
+		
+		return ret;
+	}
 }
