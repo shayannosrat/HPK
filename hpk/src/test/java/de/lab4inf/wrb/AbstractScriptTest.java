@@ -366,7 +366,7 @@ public abstract class AbstractScriptTest {
 
     @Test(expected = IllegalArgumentException.class)
     public final void testWrongSymbol() throws Exception {
-        String task = "2.1  x";
+        String task = "2.1 § x";
         try {
             script.parse(task);
             fail(NO_EXCEPTION_THROWN);

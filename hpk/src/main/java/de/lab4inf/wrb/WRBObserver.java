@@ -17,14 +17,8 @@ public class WRBObserver extends WRBBaseVisitor<Double> {
 		return visit(ctx.assignFunc());
 	}
 	
-	/*
-	 * EXPRESSION
-	 */
-	
 	@Override
 	public Double visitExpr(WRBParser.ExprContext ctx) {
-		/*if(ctx.evalUserFunc() != null)
-			return visit(ctx.evalUserFunc());*/
 		if(ctx.term() != null)
 			return visit(ctx.term());
 		else if (ctx.exprAdd() != null)
@@ -42,10 +36,6 @@ public class WRBObserver extends WRBBaseVisitor<Double> {
 		
 		return visit(ctx.term());
 	}
-	
-	/*
-	 * TERM
-	 */
 	
 	@Override
 	public Double visitTerm(WRBParser.TermContext ctx) {
@@ -68,11 +58,7 @@ public class WRBObserver extends WRBBaseVisitor<Double> {
 		
 		return visit(ctx.factor());
 	}
-	
-	/*
-	 * FACTOR
-	 */
-	
+
 	@Override
 	public Double visitFactor(WRBParser.FactorContext ctx) {
 		
@@ -81,20 +67,14 @@ public class WRBObserver extends WRBBaseVisitor<Double> {
 		return visit(ctx.signedAtom());
 	}
 	
-	/*
-	 * POW
-	 */
-	
+
 	@Override
 	public Double visitPow(WRBParser.PowContext ctx) {
 		
 		return visit(ctx.factor());
 	}
 	
-	/*
-	 * SIGNED ATOM
-	 */
-	
+
 	@Override
 	public Double visitSignedAtom(WRBParser.SignedAtomContext ctx) {
 		
@@ -103,10 +83,7 @@ public class WRBObserver extends WRBBaseVisitor<Double> {
 		return visit(ctx.atom());
 	}
 	
-	/*
-	 * ATOM
-	 */
-	
+
 	@Override
 	public Double visitAtom(WRBParser.AtomContext ctx) {
 		
@@ -119,10 +96,7 @@ public class WRBObserver extends WRBBaseVisitor<Double> {
 		return varMemory.get(ctx.ID().getText());
 	}
 	
-	/*
-	 * FUNCTION
-	 */
-	
+
 	@Override
 	public Double visitFunction(WRBParser.FunctionContext ctx) {
 		
@@ -142,20 +116,13 @@ public class WRBObserver extends WRBBaseVisitor<Double> {
 			i++;
 		}
 
-		
-		//getFunctionMemory(funcMemory);
-		
 		return funcMemory.get(ctx.i.getText()).eval(params);
 		
 	}
 	
-	
-	/*
-	 * MATH-FUNCTIONS
-	 */
-	
 	@Override
 	public Double visitMathFunction(WRBParser.MathFunctionContext ctx) {
+		
 		if(ctx.ABS() != null)
 			return Math.abs(visit(ctx.e));
 		else if(ctx.ACOS() != null)
@@ -207,24 +174,31 @@ public class WRBObserver extends WRBBaseVisitor<Double> {
 	
 	@Override
 	public Double visitMax(WRBParser.MaxContext ctx) {
-		if(ctx.e4 == null) {
-			if(ctx.e3 == null)
-				return Math.max(visit(ctx.e1), visit(ctx.e2));
-			else
-				return Math.max(visit(ctx.e1), Math.max(visit(ctx.e2), visit(ctx.e3)));
-		} else
-			return Math.max(Math.max(visit(ctx.e1), visit(ctx.e2)), Math.max(visit(ctx.e3), visit(ctx.e4)));
+		
+		
+		int i = ctx.getChildCount();
+		
+		switch(i) {
+		case 6: return Math.max(visit(ctx.e1), visit(ctx.e2));
+		case 8: return Math.max(visit(ctx.e1), Math.max(visit(ctx.e2), visit(ctx.e3)));	
+		case 10: return Math.max(Math.max(visit(ctx.e1), visit(ctx.e2)), Math.max(visit(ctx.e3), visit(ctx.e4)));	
+		default: return null;
+		}
+		
 	}
 	
 	@Override
 	public Double visitMin(WRBParser.MinContext ctx) {
-		if(ctx.e4 == null) {
-			if(ctx.e3 == null)
-				return Math.min(visit(ctx.e1), visit(ctx.e2));
-			else
-				return Math.min(visit(ctx.e1), Math.min(visit(ctx.e2), visit(ctx.e3)));
-		} else
-			return Math.min(Math.min(visit(ctx.e1), visit(ctx.e2)), Math.min(visit(ctx.e3), visit(ctx.e4)));
+		
+		int i = ctx.getChildCount();
+		
+		switch(i) {
+		case 6: return Math.min(visit(ctx.e1), visit(ctx.e2));
+		case 8: return Math.min(visit(ctx.e1), Math.min(visit(ctx.e2), visit(ctx.e3)));	
+		case 10: return Math.min(Math.min(visit(ctx.e1), visit(ctx.e2)), Math.min(visit(ctx.e3), visit(ctx.e4)));	
+		default: return null;
+		}
+		
 	}
 	
 	@Override

@@ -19,7 +19,7 @@ public class WRBScript implements Script {
 	public WRBScript() {}
 	
 	/**
-     * Parse the given String into an internal representation (e.g. as AST) and
+     * Parse the given String into an internal representation and
      * evaluate the expression(s).
      * @param definition of the script expression(s) as a String
      * @return the result of the parsed evaluation
@@ -46,7 +46,7 @@ public class WRBScript implements Script {
 	}
 	
 	/**
-     * Parse the InputStream into an internal representation (e.g. as AST) and
+     * Parse the InputStream into an internal representation and
      * evaluate the expression(s).
      * @param defStream of the script expression(s) as InputStream
      * @return the result of the parsed evaluation

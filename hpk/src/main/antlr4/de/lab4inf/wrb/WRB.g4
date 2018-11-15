@@ -101,15 +101,11 @@ mathFunction
 	;
 
 min 
-	: MIN '(' e1=expr ',' e2=expr ')'				
-	| MIN '(' e1=expr ',' e2=expr ',' e3=expr ')'	
-	| MIN '(' e1=expr ',' e2=expr ',' e3=expr ',' e4=expr ')'
+	: MIN '(' expr (',' expr)* ')'
 	;
 	
 max 
-	: MAX '(' e1=expr ',' e2=expr ')'				
-	| MAX '(' e1=expr ',' e2=expr ',' e3=expr ')'	
-	| MAX '(' e1=expr ',' e2=expr ',' e3=expr ',' e4=expr ')'
+	: MAX '(' expr (',' expr)* ')'
 	;
 	
 evalUserFunc
