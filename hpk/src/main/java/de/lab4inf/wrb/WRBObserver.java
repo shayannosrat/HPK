@@ -2,11 +2,15 @@ package de.lab4inf.wrb;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.OptionalDouble;
+import java.util.stream.DoubleStream;
+
 
 public class WRBObserver extends WRBBaseVisitor<Double> {
 	
 	public HashMap<String, Double> varMemory = new HashMap<>();
 	public HashMap<String, WRBFunction> funcMemory = new HashMap<>();
+	public HashMap<String, WRBFunction> mathFuncMemory = new HashMap<>();
 	
 	@Override
 	public Double visitStatement(WRBParser.StatementContext ctx) {
@@ -176,29 +180,34 @@ public class WRBObserver extends WRBBaseVisitor<Double> {
 	public Double visitMax(WRBParser.MaxContext ctx) {
 		
 		
-		int i = ctx.getChildCount();
-		
-		switch(i) {
-		case 6: return Math.max(visit(ctx.e1), visit(ctx.e2));
-		case 8: return Math.max(visit(ctx.e1), Math.max(visit(ctx.e2), visit(ctx.e3)));	
-		case 10: return Math.max(Math.max(visit(ctx.e1), visit(ctx.e2)), Math.max(visit(ctx.e3), visit(ctx.e4)));	
-		default: return null;
+		List<WRBParser.ExprContext> exp = ctx.expr();
+		double[] params = new double[exp.size()];
+		int i = 0;
+		for(WRBParser.ExprContext c : exp) {
+			params[i] = visit(c);
+			i++;
 		}
+		
+		OptionalDouble maxTemp = DoubleStream.of(params).max();
+		double max = maxTemp.getAsDouble();
+		return max;
 		
 	}
 	
 	@Override
 	public Double visitMin(WRBParser.MinContext ctx) {
 		
-		int i = ctx.getChildCount();
-		
-		switch(i) {
-		case 6: return Math.min(visit(ctx.e1), visit(ctx.e2));
-		case 8: return Math.min(visit(ctx.e1), Math.min(visit(ctx.e2), visit(ctx.e3)));	
-		case 10: return Math.min(Math.min(visit(ctx.e1), visit(ctx.e2)), Math.min(visit(ctx.e3), visit(ctx.e4)));	
-		default: return null;
+		List<WRBParser.ExprContext> exp = ctx.expr();
+		double[] params = new double[exp.size()];
+		int i = 0;
+		for(WRBParser.ExprContext c : exp) {
+			params[i] = visit(c);
+			i++;
 		}
 		
+		OptionalDouble minTemp = DoubleStream.of(params).min();
+		double min = minTemp.getAsDouble();
+		return min;
 	}
 	
 	@Override

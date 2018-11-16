@@ -123,10 +123,13 @@ public class WRBScript implements Script {
      * @return an implementation
      */
 	public WRBFunction getFunction(String name) throws IllegalArgumentException{
-		if(ob.funcMemory.containsKey(name))
+		if(ob.mathFuncMemory.containsKey(name)) {
+			return ob.mathFuncMemory.get(name);
+		} else if(ob.funcMemory.containsKey(name)) {
 			return ob.funcMemory.get(name);
-		else
+		} else {
 			throw new IllegalArgumentException("Funktion existiert nicht!");
+		}
 	}
 	
 	@Override
