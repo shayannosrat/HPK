@@ -8,7 +8,6 @@ import org.antlr.v4.runtime.*;
 import de.lab4inf.wrb.WRBLexer;
 import de.lab4inf.wrb.WRBObserver;
 import de.lab4inf.wrb.WRBParser;
-import de.lab4inf.wrb.WRBParser.RunContext;
 
 public class App {
 	public static void main(String args[]) throws Exception {
@@ -34,14 +33,18 @@ public class App {
 			parser.setInputStream(tokenStream); // neuen Token-Stream an parser geben
 			parser.removeErrorListeners();
 			parser.addErrorListener(ThrowingErrorListener.INSTANCE);
-			
+			try {
 				r = parser.run(); // Token-Stream parsen
 				Double res = Double.valueOf(ob.visitRun(r));// Ergebnis ausgeben
 				System.out.println("Visitor: " + res);
 				
+			} catch(Exception e) {
+				e.printStackTrace();
+				throw new IllegalArgumentException("Ungültige Eingabe!");
+				
+			}
 			
-			
-			expr = br.readLine(); // nchste Zeile lesen
+			expr = br.readLine(); // nächste Zeile lesen
 			line++;
 		}
 	}

@@ -27,6 +27,16 @@ public class Matrix {
 		this.m = m;
 	}
 	
+	public Matrix(Double[][] m) throws IllegalArgumentException{
+		if(m == null)
+			throw new IllegalArgumentException("Matrix kann nicht null sein");
+		this.m = new double[m.length][m[0].length];
+		
+		for(int i = 0; i < m.length; i++) 
+			for(int j = 0; j < m[0].length; j++)
+				this.m[i][j] = m[i][j];
+	}
+	
 	/**
 	 * Takes a Dimension and creates a matrix with it
 	 * 

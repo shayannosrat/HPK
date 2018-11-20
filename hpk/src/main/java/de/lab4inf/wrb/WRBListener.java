@@ -227,4 +227,44 @@ public interface WRBListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAssignVar(WRBParser.AssignVarContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link WRBParser#matrixMult}.
+	 * @param ctx the parse tree
+	 */
+	void enterMatrixMult(WRBParser.MatrixMultContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link WRBParser#matrixMult}.
+	 * @param ctx the parse tree
+	 */
+	void exitMatrixMult(WRBParser.MatrixMultContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link WRBParser#assignMatrix}.
+	 * @param ctx the parse tree
+	 */
+	void enterAssignMatrix(WRBParser.AssignMatrixContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link WRBParser#assignMatrix}.
+	 * @param ctx the parse tree
+	 */
+	void exitAssignMatrix(WRBParser.AssignMatrixContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link WRBParser#vector}.
+	 * @param ctx the parse tree
+	 */
+	void enterVector(WRBParser.VectorContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link WRBParser#vector}.
+	 * @param ctx the parse tree
+	 */
+	void exitVector(WRBParser.VectorContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link WRBParser#matrix}.
+	 * @param ctx the parse tree
+	 */
+	void enterMatrix(WRBParser.MatrixContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link WRBParser#matrix}.
+	 * @param ctx the parse tree
+	 */
+	void exitMatrix(WRBParser.MatrixContext ctx);
 }

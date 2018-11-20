@@ -1,6 +1,8 @@
 package de.lab4inf.wrb.matrix;
 
-import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class DivideNConquerMultiplier {
 	
@@ -18,6 +20,9 @@ public class DivideNConquerMultiplier {
 		/**
 		 * Setup
 		 */
+		
+		ExecutorService calcExecutor = Executors.newCachedThreadPool();
+		ExecutorService addExecutor = Executors.newCachedThreadPool();
 		
 		// Matrizen zunächst quadratisch machen, damit wir uns nicht mit ungeraden Größen rumschlagen müssen
 		
@@ -51,8 +56,6 @@ public class DivideNConquerMultiplier {
 				for(int k = 0; k < 2; k++)
 					temp[i][j][k] = new Matrix(splitA[i][j].getRows(), splitB[i][j].getCols());
 		
-		ArrayList<MultiplyThread> mulThreads = new ArrayList<>();
-		
 		/**
 		 * Paralleler 1. Teil 
 		 */
@@ -61,10 +64,8 @@ public class DivideNConquerMultiplier {
 			for(int k = 0; k < 2; k++) {
 				MultiplyThread thread1 = new MultiplyThread(splitA[j][0], splitB[0][k], temp[j][k][0]);
 				MultiplyThread thread2 = new MultiplyThread(splitA[j][1], splitB[1][k], temp[j][k][1]);
-				mulThreads.add(thread1);
-				mulThreads.add(thread2);
-				thread1.start();
-				thread2.start();
+				calcExecutor.execute(thread1);
+				calcExecutor.execute(thread2);
 			}
 		}
 		
@@ -72,24 +73,25 @@ public class DivideNConquerMultiplier {
 		 * Zusammenführen 1. Teil
 		 */
 		
-		for(MultiplyThread thread : mulThreads) {
-			try {
-				thread.join();
-			} catch (InterruptedException e) {
-				throw new RuntimeException("MultiplyThread got interrupted!");
-			}
-		}
+		calcExecutor.shutdown();
+		try {
+			if(!calcExecutor.awaitTermination(180, TimeUnit.SECONDS))
+				calcExecutor.shutdownNow();
+				if (!calcExecutor.awaitTermination(60, TimeUnit.SECONDS))
+		           System.err.println("Pool did not terminate");
+		} catch (InterruptedException ie) {
+			calcExecutor.shutdownNow();
+			Thread.currentThread().interrupt();
+	    }
 		
 		/**
 		 * Paralleler 2. Teil
 		 */
 		
-		ArrayList<AddThread> addThreads = new ArrayList<>();
 		for(int j = 0; j < 2; j++) {
 			for(int k = 0; k < 2; k++) {
 				AddThread thread = new AddThread(temp[j][k][0], temp[j][k][1], splitC[j][k]);
-				addThreads.add(thread);
-				thread.start();
+				addExecutor.execute(thread);
 			}
 		}
 		
@@ -97,13 +99,16 @@ public class DivideNConquerMultiplier {
 		 * Merge 2. Teil
 		 */
 		
-		for(AddThread thread : addThreads) {
-			try {
-				thread.join();
-			} catch (InterruptedException e) {
-				throw new RuntimeException("AddThread got Interrupted");
-			}
-		}
+		addExecutor.shutdown();
+		try {
+			if(!addExecutor.awaitTermination(180, TimeUnit.SECONDS))
+				addExecutor.shutdownNow();
+				if (!addExecutor.awaitTermination(60, TimeUnit.SECONDS))
+		           System.err.println("Pool did not terminate");
+		} catch (InterruptedException ie) {
+			addExecutor.shutdownNow();
+			Thread.currentThread().interrupt();
+	    }
 		
 		return merge(splitC);
 	}
@@ -179,23 +184,22 @@ public class DivideNConquerMultiplier {
 		int rows = mat[0][0].getRows() + mat[1][0].getRows();
 		int cols = mat[0][0].getCols() + mat[0][1].getCols();
 		
-		int splitLength1 = rows / 2;
-		int splitLength2 = rows - splitLength1;
+		int splitLength = rows / 2;
 		
 		double[][] res = new double[rows][cols];
 		
 		for(int i = 0; i < rows; i++) {
 			for(int j = 0; j < cols; j++) {
-				if(i < splitLength1) 
-					if(j < splitLength1)
+				if(i < splitLength) 
+					if(j < splitLength)
 						res[i][j] = mat[0][0].getM()[i][j];
 					else
-						res[i][j] = mat[0][1].getM()[i][j - splitLength1];
+						res[i][j] = mat[0][1].getM()[i][j - splitLength];
 				else
-					if(j < splitLength1)
-						res[i][j] = mat[1][0].getM()[i - splitLength1][j];
+					if(j < splitLength)
+						res[i][j] = mat[1][0].getM()[i - splitLength][j];
 					else
-						res[i][j] = mat[1][1].getM()[i - splitLength1][j - splitLength1];
+						res[i][j] = mat[1][1].getM()[i - splitLength][j - splitLength];
 			}
 		}
 		
@@ -207,6 +211,7 @@ public class DivideNConquerMultiplier {
 	 * @param n
 	 * @return
 	 */
+	@SuppressWarnings("unused")
 	private static int nextPowerOfTwo(int n) {
 		int log2 = (int) Math.ceil(Math.log(n) / Math.log(2));
 		return (int) Math.pow(2, log2);
@@ -217,7 +222,7 @@ public class DivideNConquerMultiplier {
 	 * @author Till Kobbe
 	 *
 	 */
-	private static class MultiplyThread extends Thread {
+	private static class MultiplyThread implements Runnable {
 		private final Matrix A;
 		private final Matrix B;
 		private Matrix C;
@@ -254,7 +259,7 @@ public class DivideNConquerMultiplier {
 	 * @author Till Kobbe
 	 *
 	 */
-	private static class AddThread extends Thread {
+	private static class AddThread implements Runnable {
 		private final Matrix A;
 		private final Matrix B;
 		private Matrix C;

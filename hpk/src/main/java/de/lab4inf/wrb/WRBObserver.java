@@ -4,13 +4,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.OptionalDouble;
 import java.util.stream.DoubleStream;
-
+import de.lab4inf.wrb.matrix.Matrix;
+import de.lab4inf.wrb.matrix.ParallelMultiplier;
+import java.util.ArrayList;
 
 public class WRBObserver extends WRBBaseVisitor<Double> {
 	
 	public HashMap<String, Double> varMemory = new HashMap<>();
 	public HashMap<String, WRBFunction> funcMemory = new HashMap<>();
 	public HashMap<String, WRBFunction> mathFuncMemory = new HashMap<>();
+	public HashMap<String, Matrix> matMemory = new HashMap<>();
 	
 	@Override
 	public Double visitStatement(WRBParser.StatementContext ctx) {
@@ -18,6 +21,10 @@ public class WRBObserver extends WRBBaseVisitor<Double> {
 			return visit(ctx.expr());
 		if(ctx.assignVar() != null)
 			return visit(ctx.assignVar());
+		if(ctx.assignMatrix() != null)
+			return visit(ctx.assignMatrix());
+		if(ctx.matrixMult() != null)
+			return visit(ctx.matrixMult());
 		return visit(ctx.assignFunc());
 	}
 	
@@ -78,6 +85,72 @@ public class WRBObserver extends WRBBaseVisitor<Double> {
 		return visit(ctx.factor());
 	}
 	
+	@Override
+	public Double visitMatrixMult(WRBParser.MatrixMultContext ctx) {
+		Matrix A; 
+		Matrix B;
+		
+		for(WRBParser.VectorContext v : ctx.a.vector()) {
+			if(! (v.SCI_NO().size() == ctx.a.vector(0).SCI_NO().size()))
+				throw new IllegalArgumentException("Zeilen der Matrix A müssen die gleiche Anzahl an Elementen enthalten!");
+		}
+		
+		for(WRBParser.VectorContext v : ctx.b.vector()) {
+			if(! (v.SCI_NO().size() == ctx.b.vector(0).SCI_NO().size()))
+				throw new IllegalArgumentException("Zeilen der Matrix B müssen die gleiche Anzahl an Elementen enthalten!");
+		}
+		
+		double[][] a = new double[ctx.a.vector().size()][ctx.a.vector(0).SCI_NO().size()];
+		
+		for(int i = 0; i < a.length; i++) {
+			for(int j = 0; j < a[0].length; j++) {
+				a[i][j] = Double.parseDouble(ctx.a.vector(i).SCI_NO(j).getText());
+			}
+		}
+		
+		double[][] b = new double[ctx.b.vector().size()][ctx.b.vector(0).SCI_NO().size()];
+		
+		for(int i = 0; i < b.length; i++) {
+			for(int j = 0; j < b[0].length; j++) {
+				b[i][j] = Double.parseDouble(ctx.b.vector(i).SCI_NO(j).getText());
+			}
+		}
+		
+		A = new Matrix(a);
+		B = new Matrix(b);
+		
+		Matrix res = ParallelMultiplier.multiply(A, B);
+		
+		System.out.println(res.toString());
+		
+		
+		return 1.0;
+	}
+	
+	@Override
+	public Double visitAssignMatrix(WRBParser.AssignMatrixContext ctx) throws IllegalArgumentException{
+		String id = ctx.i.getText();
+		for(WRBParser.VectorContext v : ctx.m.vector()) {
+			if(! (v.SCI_NO().size() == ctx.m.vector(0).SCI_NO().size()))
+				throw new IllegalArgumentException("Zeilen der Matrix müssen die gleiche Anzahl an Elementen enthalten!");
+		}
+			
+		double[][] m = new double[ctx.m.vector().size()][ctx.m.vector(0).SCI_NO().size()];
+					
+		for(int i = 0; i < m.length; i++) {
+			for(int j = 0; j < m[0].length; j++) {
+				m[i][j] = Double.parseDouble(ctx.m.vector(i).SCI_NO(j).getText());
+			}
+		}
+		
+		Matrix M = new Matrix(m);
+		
+		System.out.println("Saved " + id + ":\n" + M.toString());
+		
+		matMemory.put(id, M);
+		
+		return 1.0;
+	}
 
 	@Override
 	public Double visitSignedAtom(WRBParser.SignedAtomContext ctx) {
@@ -123,6 +196,8 @@ public class WRBObserver extends WRBBaseVisitor<Double> {
 		return funcMemory.get(ctx.i.getText()).eval(params);
 		
 	}
+	
+	
 	
 	@Override
 	public Double visitMathFunction(WRBParser.MathFunctionContext ctx) {

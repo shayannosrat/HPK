@@ -1,6 +1,8 @@
 package de.lab4inf.wrb.matrix;
 
-import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class ParallelMultiplier {
 	
@@ -28,11 +30,12 @@ public class ParallelMultiplier {
 		 * Setup
 		 */
 		
+		ExecutorService executor = Executors.newCachedThreadPool();
+		
 		Matrix res = new Matrix(A.getRows(), B.getCols());
 		
 		Matrix D = B.transpose();
 		
-		ArrayList<MultiplyThread> threads = new ArrayList<>();
 		
 		/**
 		 * Paralleler Teil
@@ -40,26 +43,28 @@ public class ParallelMultiplier {
 		
 		for(int i = 0; i < A.getRows(); i++) {
 			MultiplyThread thread = new MultiplyThread(i, B.getCols(), A, D, res);
-			threads.add(thread);
-			thread.start();
+			executor.execute(thread);
 		}
 
 		/**
 		 * Zusammenführen
 		 */
 		
-		for(MultiplyThread thread : threads) {
-			try {
-				thread.join();
-			} catch (InterruptedException e) {
-				throw new RuntimeException("Thread got interrupted!");
-			}
-		}
+		executor.shutdown();
+		try {
+			if(!executor.awaitTermination(180, TimeUnit.SECONDS))
+				executor.shutdownNow();
+				if (!executor.awaitTermination(60, TimeUnit.SECONDS))
+		           System.err.println("Pool did not terminate");
+		} catch (InterruptedException ie) {
+			executor.shutdownNow();
+			Thread.currentThread().interrupt();
+	    }
 		
 		return res;
 	}	
 	
-	private static class MultiplyThread extends Thread {
+	private static class MultiplyThread implements Runnable {
 		private final int i;
 		private final int b_col;
 		private final Matrix A;
