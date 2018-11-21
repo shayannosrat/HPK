@@ -191,7 +191,7 @@ public class WRBObserver extends WRBBaseVisitor<Double> {
 			return Math.pow(visit(ctx.e1), visit(ctx.e2));
 		} 
 		
-		String id = ctx.id.getText();
+		String id = ctx.id.getText().toLowerCase();
 		var = visit(ctx.e);
 		if(mathFuncMemory.containsKey(id)) {
 			MathFunction fct =  mathFuncMemory.get(id);
@@ -213,7 +213,7 @@ public class WRBObserver extends WRBBaseVisitor<Double> {
 	@Override
 	public Double visitMax(WRBParser.MaxContext ctx) {
 		
-		System.out.println("visiteed max");
+		
 		List<WRBParser.ExprContext> exp = ctx.expr();
 		double[] params = new double[exp.size()];
 		int i = 0;
@@ -246,7 +246,7 @@ public class WRBObserver extends WRBBaseVisitor<Double> {
 	
 	@Override
 	public Double visitAssignVar(WRBParser.AssignVarContext ctx) {
-		System.out.println("visited assignVar");
+		
 		if(ctx.expr() != null) {
 			Double var = visit(ctx.expr());
 			varMemory.put(ctx.i.getText(), var);
@@ -260,7 +260,7 @@ public class WRBObserver extends WRBBaseVisitor<Double> {
 	
 	@Override
 	public Double visitAssignFunc(WRBParser.AssignFuncContext ctx) {
-		System.out.println("visited assignFunc");
+		
 		
 		
 		String id = ctx.i.getText();

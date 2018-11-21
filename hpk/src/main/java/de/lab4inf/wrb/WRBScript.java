@@ -37,9 +37,9 @@ public class WRBScript implements Script {
 	static MathFunction loge = (value) -> Math.log(value[0]);
 	static MathFunction log = (value) -> Math.log10(value[0]);
 	static MathFunction log10 = (value) -> Math.log10(value[0]);
-	static MathFunction log2 = (value) -> Math.log(value[0]);
-	static MathFunction ld = (value) -> Math.log(value[0]);
-	static MathFunction lb = (value) -> Math.log(value[0]);
+	static MathFunction log2 = (value) -> Math.log(value[0])/Math.log(2);
+	static MathFunction ld = (value) -> Math.log(value[0])/Math.log(2);
+	static MathFunction lb = (value) -> Math.log(value[0])/Math.log(2);
 	static MathFunction pow = (value) -> Math.pow(value[0], value[1]);
 	static MathFunction rint = (value) -> Math.rint(value[0]);
 	static MathFunction signum = (value) -> Math.signum(value[0]);
