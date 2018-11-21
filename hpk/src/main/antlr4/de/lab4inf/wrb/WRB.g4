@@ -71,54 +71,21 @@ atom
    	;	
    	
 function
-	: m=mathFunction								
-	| evalUserFunc
+	:	a=max											
+	|	i=min	
+	|	POWFUNC '('e1=expr','e2=expr')' 
+	|	id=ID '(' e=expr(','expr)* ')'	
 	;
 
-mathFunction
-	: ABS '(' e=expr ')'							
-	| ACOS '(' e=expr ')'							
-	| ASIN '(' e=expr ')'							
-	| ATAN '(' e=expr ')'							
-	| CBRT '(' e=expr ')'							
-	| CEIL '(' e=expr ')'							
-	| COS '(' e=expr ')'							
-	| COSH '(' e=expr ')'							
-	| EXP '(' e=expr ')'							
-	| EXPM1 '(' e=expr ')'							
-	| FLOOR '(' e=expr ')'							
-	| (LN| LOGE) '(' e=expr ')'						
-	| (LOG | LOG10) '(' e=expr ')'					
-	| (LOG2 | LD | LB) '(' e=expr ')'				
-	| a=max											
-	| i=min											
-	| POWFUNC '('e1=expr','e2=expr')'				
-	| RINT '(' e=expr ')'							
-	| SIGNUM '(' e=expr ')'							
-	| SIN '(' e=expr ')'							
-	| SINH '(' e=expr ')'							
-	| SQRT '(' e=expr ')'							
-	| TAN '(' e=expr ')'							
-	| TANH '(' e=expr ')'							
-	;
 
-min 
+min  
 	: MIN '(' expr (',' expr)* ')'
 	;
 	
 max 
 	: MAX '(' expr (',' expr)* ')'
 	;
-	
-evalUserFunc
-	: i=ID '(' p=evalParams ')'
-	;
-	
-evalParams
-	: //p=params
-	expr(','expr)*
-	//SCI_NO(','SCI_NO)*
-	;
+
 
 assignFunc
 	: i=ID '(' p=params ')' ASSIGN e=expr 					
@@ -183,46 +150,11 @@ fragment Z : [zZ];
 
 fragment NUMBER:		[0-9]+('.'[0-9]+)?;	
 fragment LAZY_FLOAT: 	'.'[0-9]+;
-
-// Token
-
-// Math Functions
-
-ABS:			A B S;
-ACOS:			A C O S;
-ASIN:			A S I N;
-ATAN:			A T A N;
-ATAN2:			A T A N '2';
-CBRT:			C B R T;
-CEIL:			C E I L;
-COS:			C O S;
-COSH:			C O S H;
-EXP:			E X P;
-EXPM1:			E X P M '1';
-FLOOR:			F L O O R;
-FLOORDIV:		F L O O R D I V;
-FLOORMOD:		F L O O R M O D;
-HYPOD:			H Y P O D;
-LN:				L N;
-LOG:			L O G;
-LOGE:			L O G E;
-LOG10:			L O G '10';
-LOG2:			L O G '2';
-LB:				L B;
-LD:				L D;
-LOG1P:			L O G '1' P;
+ 
+POWFUNC:		P O W;
 MAX:			M A X;
 MIN:			M I N;
-POWFUNC:		P O W;
-RINT:			R I N T;
-ROUND:			R O U N D;
-SCALB:			S C A L B;
-SIGNUM:			S I G N U M;
-SIN:			S I N;
-SINH:			S I N H;
-SQRT:			S Q R T;
-TAN:			T A N;
-TANH:			T A N H;
+
 
 SCI_NO:			(NUMBER (E ('+' | '-') NUMBER)?) | LAZY_FLOAT;
 

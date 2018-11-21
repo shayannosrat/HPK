@@ -4,16 +4,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.OptionalDouble;
 import java.util.stream.DoubleStream;
+
+import de.lab4inf.wrb.WRBFunction.MathFunction;
 import de.lab4inf.wrb.matrix.Matrix;
 import de.lab4inf.wrb.matrix.ParallelMultiplier;
 import java.util.ArrayList;
 
 public class WRBObserver extends WRBBaseVisitor<Double> {
 	
+	//private WRBScript script = new WRBScript();
 	public HashMap<String, Double> varMemory = new HashMap<>();
 	public HashMap<String, WRBFunction> funcMemory = new HashMap<>();
-	public HashMap<String, WRBFunction> mathFuncMemory = new HashMap<>();
+	public HashMap<String, MathFunction> mathFuncMemory = WRBScript.getMathFunctionMap();
 	public HashMap<String, Matrix> matMemory = new HashMap<>();
+	protected Script script;
 	
 	@Override
 	public Double visitStatement(WRBParser.StatementContext ctx) {
@@ -176,85 +180,40 @@ public class WRBObserver extends WRBBaseVisitor<Double> {
 
 	@Override
 	public Double visitFunction(WRBParser.FunctionContext ctx) {
+		Double var=null;
 		
-		if(ctx.mathFunction() != null)
-			return visit(ctx.mathFunction());
-		return visit(ctx.evalUserFunc());
-	}
-	
-	@Override
-	public Double visitEvalUserFunc(WRBParser.EvalUserFuncContext ctx) {
 		
-		List<WRBParser.ExprContext> exp = ctx.p.expr();
-		double[] params = new double[exp.size()];
-		int i = 0;
-		for(WRBParser.ExprContext c : exp) {
-			params[i] = visit(c);
-			i++;
-		}
-
-		return funcMemory.get(ctx.i.getText()).eval(params);
-		
-	}
-	
-	
-	
-	@Override
-	public Double visitMathFunction(WRBParser.MathFunctionContext ctx) {
-		
-		if(ctx.ABS() != null)
-			return Math.abs(visit(ctx.e));
-		else if(ctx.ACOS() != null)
-			return Math.acos(visit(ctx.e));
-		else if(ctx.ASIN() != null)
-			return Math.asin(visit(ctx.e));
-		else if(ctx.ATAN() != null)
-			return Math.atan(visit(ctx.e));
-		else if(ctx.CBRT() != null)
-			return Math.cbrt(visit(ctx.e));
-		else if(ctx.CEIL() != null)
-			return Math.ceil(visit(ctx.e));
-		else if(ctx.COS() != null)
-			return Math.cos(visit(ctx.e));
-		else if(ctx.COSH() != null)
-			return Math.cosh(visit(ctx.e));
-		else if(ctx.EXP() != null)
-			return Math.exp(visit(ctx.e));
-		else if(ctx.EXPM1() != null)
-			return Math.expm1(visit(ctx.e));
-		else if(ctx.FLOOR() != null)
-			return Math.floor(visit(ctx.e));
-		else if(ctx.LN() != null || ctx.LOGE() != null)
-			return Math.log(visit(ctx.e));
-		else if(ctx.LOG() != null ||  ctx.LOG10() != null)
-			return Math.log10(visit(ctx.e));
-		else if(ctx.LOG2() != null || ctx.LD() != null || ctx.LB() != null)
-			return Math.log(visit(ctx.e))/Math.log(2);
-		else if(ctx.max() != null)
+		if(ctx.max() != null) {
 			return visit(ctx.max());
-		else if(ctx.min() != null)
+		}else if(ctx.min() != null) {
 			return visit(ctx.min());
-		else if(ctx.POWFUNC() != null)
+		} else if(ctx.POWFUNC() != null) {
 			return Math.pow(visit(ctx.e1), visit(ctx.e2));
-		else if(ctx.RINT() != null)
-			return Math.rint(visit(ctx.e));
-		else if(ctx.SIGNUM() != null)
-			return Math.signum(visit(ctx.e));
-		else if(ctx.SIN() != null)
-			return Math.sin(visit(ctx.e));
-		else if(ctx.SINH() != null)
-			return Math.sinh(visit(ctx.e));
-		else if(ctx.SQRT() != null)
-			return Math.sqrt(visit(ctx.e));
-		else if(ctx.TAN() != null)
-			return Math.tan(visit(ctx.e));
-		return Math.tanh(visit(ctx.e));
+		} 
+		
+		String id = ctx.id.getText();
+		var = visit(ctx.e);
+		if(mathFuncMemory.containsKey(id)) {
+			MathFunction fct =  mathFuncMemory.get(id);
+			return fct.eval(var);
+		} else if(funcMemory.containsKey(id)) {
+			List<WRBParser.ExprContext> exp = ctx.expr();
+			double[] params = new double[exp.size()];
+			int i = 0;
+			for(WRBParser.ExprContext c : exp) {
+				params[i] = visit(c);
+				i++;
+			}
+			return funcMemory.get(id).eval(params);
+		}
+		return null;
+		
 	}
 	
 	@Override
 	public Double visitMax(WRBParser.MaxContext ctx) {
 		
-		
+		System.out.println("visiteed max");
 		List<WRBParser.ExprContext> exp = ctx.expr();
 		double[] params = new double[exp.size()];
 		int i = 0;
@@ -287,6 +246,7 @@ public class WRBObserver extends WRBBaseVisitor<Double> {
 	
 	@Override
 	public Double visitAssignVar(WRBParser.AssignVarContext ctx) {
+		System.out.println("visited assignVar");
 		if(ctx.expr() != null) {
 			Double var = visit(ctx.expr());
 			varMemory.put(ctx.i.getText(), var);
@@ -300,7 +260,7 @@ public class WRBObserver extends WRBBaseVisitor<Double> {
 	
 	@Override
 	public Double visitAssignFunc(WRBParser.AssignFuncContext ctx) {
-		
+		System.out.println("visited assignFunc");
 		
 		
 		String id = ctx.i.getText();

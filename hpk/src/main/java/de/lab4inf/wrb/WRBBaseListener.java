@@ -172,18 +172,6 @@ public class WRBBaseListener implements WRBListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMathFunction(WRBParser.MathFunctionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitMathFunction(WRBParser.MathFunctionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterMin(WRBParser.MinContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -203,30 +191,6 @@ public class WRBBaseListener implements WRBListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitMax(WRBParser.MaxContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterEvalUserFunc(WRBParser.EvalUserFuncContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitEvalUserFunc(WRBParser.EvalUserFuncContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterEvalParams(WRBParser.EvalParamsContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitEvalParams(WRBParser.EvalParamsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

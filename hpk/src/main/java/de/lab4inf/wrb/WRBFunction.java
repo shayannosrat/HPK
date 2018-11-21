@@ -9,6 +9,10 @@ public class WRBFunction implements Function {
 	private WRBParser.ExprContext ctx;
 	HashMap<String, Double> scope = new HashMap<>();
 	
+	interface MathFunction{
+		double eval(final double... args);
+	}
+	
 	public WRBFunction(String[] paramNames, WRBParser.ExprContext ctx, HashMap<String, Double> varMemory) {
 		this.paramNames = paramNames;
 		this.ctx = ctx;
@@ -41,7 +45,7 @@ public class WRBFunction implements Function {
 		return ob.visit(ctx);
 		
 	}
-
+	
 	public void getFunctionMemory(HashMap<String, WRBFunction> funcMemory) {
 		
 		ob.funcMemory = funcMemory;

@@ -138,16 +138,6 @@ public interface WRBListener extends ParseTreeListener {
 	 */
 	void exitFunction(WRBParser.FunctionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link WRBParser#mathFunction}.
-	 * @param ctx the parse tree
-	 */
-	void enterMathFunction(WRBParser.MathFunctionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link WRBParser#mathFunction}.
-	 * @param ctx the parse tree
-	 */
-	void exitMathFunction(WRBParser.MathFunctionContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link WRBParser#min}.
 	 * @param ctx the parse tree
 	 */
@@ -167,26 +157,6 @@ public interface WRBListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitMax(WRBParser.MaxContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link WRBParser#evalUserFunc}.
-	 * @param ctx the parse tree
-	 */
-	void enterEvalUserFunc(WRBParser.EvalUserFuncContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link WRBParser#evalUserFunc}.
-	 * @param ctx the parse tree
-	 */
-	void exitEvalUserFunc(WRBParser.EvalUserFuncContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link WRBParser#evalParams}.
-	 * @param ctx the parse tree
-	 */
-	void enterEvalParams(WRBParser.EvalParamsContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link WRBParser#evalParams}.
-	 * @param ctx the parse tree
-	 */
-	void exitEvalParams(WRBParser.EvalParamsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link WRBParser#assignFunc}.
 	 * @param ctx the parse tree

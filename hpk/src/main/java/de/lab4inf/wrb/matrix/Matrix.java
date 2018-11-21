@@ -5,9 +5,6 @@ import java.util.Random;
 
 /**
  * This class represents a matrix via a 2-dimensional array
- * 
- * @author Till Kobbe
- *
  */
 public class Matrix {
 	/**

@@ -76,14 +76,15 @@ public interface Script {
      * @param name of the function to be unique
      * @param fct to add 
      */
-    void setFunction(String name, WRBFunction fct);
+    void setFunction(String name, Function fct);
 
     /**
      * Get a (unique!) named function.
      * @param name of the function
      * @return an implementation
      */
-    WRBFunction getFunction(String name);
+    //WRBFunction getFunction(String name);
+    Function getFunction(String name);
 
     /**
      * Get the value of a (unique!) named variable.
