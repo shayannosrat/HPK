@@ -19,7 +19,7 @@ public class matDivideConquer {
 		 * Setup
 		 */
 		
-		// Matrizen zunächst quadratisch machen, damit wir uns nicht mit ungeraden Größen rumschlagen müssen
+		// Matrizen zunächst quadratisch machen
 		
 		int n = Math.max(A.getRows(), B.getRows());
 		int m;
@@ -40,7 +40,7 @@ public class matDivideConquer {
 		
 		Matrix C = new Matrix(m, m);
 		
-		// Dann splitten
+		// splitten
 		
 		Matrix[][] splitA = split(APrep);
 		Matrix[][] splitB = split(BPrep);
@@ -214,7 +214,6 @@ public class matDivideConquer {
 	
 	/**
 	 * Thread für die 8 Multiplikationen
-	 * @author Till Kobbe
 	 *
 	 */
 	private static class MultiplyThread extends Thread {
@@ -251,7 +250,6 @@ public class matDivideConquer {
 	
 	/**
 	 * Thread für das addieren der Matrizen
-	 * @author Till Kobbe
 	 *
 	 */
 	private static class AddThread extends Thread {

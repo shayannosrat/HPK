@@ -353,15 +353,14 @@ public class MatrixMultTest {
 		long serial, parallel, dnq;
 		double serialS, parallelS, dnqS;
 		int runs = 256;
-		double SCALED = -256;
 		Random rnd = new Random();
-		Matrix a, b, resSerial = null, resParallel = null, resDnd = null;
+		Matrix a, b, resSerial = null, resParallel = null, resDnq = null;
 		
 		int matrixDimension[] = new int[] {64, 128, 256, 512, 768, 1024, 1536, 2048, 4096};
 		
 		
 		
-		for(int k=0; k < 9; k++, runs /= 2, SCALED= -runs) {
+		for(int k=0; k < 9; k++, runs /= 2) {
 			
 			long calcTimes[] = new long[runs];
 			a = Matrix.getRandomMatrix(matrixDimension[k] -1, matrixDimension[k] + 1, rnd);
@@ -382,7 +381,6 @@ public class MatrixMultTest {
 				calcTimes[i] -= System.nanoTime();
 			}
 			
-			//assertTrue(resParallel.equals(resSerial));
 			checkDoubleMatrixEqual(resParallel, resSerial);
 			
 			parallel = (LongStream.of(calcTimes).sum() / runs)*-1;
@@ -390,20 +388,21 @@ public class MatrixMultTest {
 			
 			for(int i = 0; i < runs; i++) {
 				calcTimes[i] = System.nanoTime();
-				resDnd = matDivideConquer.multiply(a, b);
+				resDnq = matDivideConquer.multiply(a, b);
 				calcTimes[i] -= System.nanoTime();
 			}
 			
-			checkDoubleMatrixEqual(resDnd, resSerial);
+			checkDoubleMatrixEqual(resDnq, resSerial);
 			
 			dnq = (LongStream.of(calcTimes).sum() / runs)*-1;
 			dnqS = dnq / 1E9;
 			
 			double speedupParallel = (double)serial/parallel;
-			double speedupDnd = (double)serial/dnq;
-			System.err.println(matrixDimension[k] - 1 + "x" + (matrixDimension[k]+1) + " Runs: " + runs + "\n--- serial: " + serialS + " \n--- parallel: " + parallelS + " --- speedup: " + speedupParallel + "\n--- divide and conquer: " + dnqS + " --- speedup: " + speedupDnd);
-			
-			
+			double speedupDnq = (double)serial/dnq;
+			System.err.println(matrixDimension[k] - 1 + "x" + (matrixDimension[k]+1) + " Runs: " + runs + 
+					"\n--- matSerial / s: " + serialS + 
+					"\n--- matParallel / s: " + parallelS + " --- speedup: " + speedupParallel + 
+					"\n--- matDivideConquer / s: " + dnqS + " --- speedup: " + speedupDnq);
 			
 			if(runs == 0)
 				runs = 1;
