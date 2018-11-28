@@ -1,253 +1,178 @@
 package de.lab4inf.wrb.matrix;
 
+import java.awt.Dimension;
+import java.util.Random;
+
 /**
- * Matrix-klasse
- * 
- * Enthaelt alle wichtigen Befehle fuer die Aufgabe
- * 
- * @author Pascal Krabbe & Rene Behring
+ * This class represents a matrix via a 2-dimensional array
  */
 public class Matrix {
-	private int rows, cols;
-	private double mat[][];
+	/**
+	 * The array with the matrix-values
+	 */
+	private double[][] m;
 	
 	/**
-	 * Private Konstruktor, damit eine Matrix nur ueber die statischen public Funktionen
-	 * erstellt werden kann 
+	 * Takes an array and creates a matrix with it
 	 * 
-	 * @param rows	Reihen
-	 * @param cols	Spalten
+	 * @param m Array of the matrix
+	 * @throws IllegalArgumentException
 	 */
-	private Matrix(int rows, int cols)
-	{
-		this.mat = new double[rows][cols];
-		this.rows = rows;
-		this.cols = cols;
+	public Matrix(double[][] m) throws IllegalArgumentException{
+		if(m == null)
+			throw new IllegalArgumentException("Matrix kann nicht null sein");
+		this.m = m;
 	}
 	
-
-	/**
-	 * Erzeugen einer neuen Matrix mit Zufallswerten 
-	 * 
-	 * @param rows	Reihen
-	 * @param cols	Spalten
-	 * @return		Ein Matrix objekt mit zufaelligen Werten
-	 */
-	public static Matrix createRandomMatrix(int rows, int cols)
-	{
-		Matrix M = new Matrix(rows, cols);
+	public Matrix(Double[][] m) throws IllegalArgumentException{
+		if(m == null)
+			throw new IllegalArgumentException("Matrix kann nicht null sein");
+		this.m = new double[m.length][m[0].length];
 		
-		for(int i=0;i<rows;i++)
-		{
-			for(int j=0;j<cols;j++)
-			{
-				M.mat[i][j] = Math.random()*100;
-			}
-		}
-		
-		return M;
-	}
-
-	/**
-	 * Erzeugen einer neuen quadratischen Matrix mit Zufallswerten 
-	 * 
-	 * @param n		Dimension der Matrix
-	 * @return		Ein Matrix objekt mit zufaelligen Werten
-	 */
-	public static Matrix createRandomMatrix(int n)
-	{
-		return createRandomMatrix(n,n);
-	}
-
-	/**
-	 * Erzeugen einer neuen Matrix in der alle Werte 0 sind 
-	 * 
-	 * @param rows	Reihen
-	 * @param cols	Spalten
-	 * @return		Eine "leere" Matrix
-	 */
-	public static Matrix createZeroMatrix(int rows, int cols)
-	{
-		Matrix M = new Matrix(rows, cols);
-		
-		for(int i=0;i<rows;i++)
-		{
-			for(int j=0;j<cols;j++)
-			{
-				M.mat[i][j] = 0;
-			}
-		}
-		
-		return M;
+		for(int i = 0; i < m.length; i++) 
+			for(int j = 0; j < m[0].length; j++)
+				this.m[i][j] = m[i][j];
 	}
 	
 	/**
-	 * Erzeugen einer neuen quadratischen Matrix in der alle Werte 0 sind 
+	 * Takes a Dimension and creates a matrix with it
 	 * 
-	 * @param n		Dimension der Matrix
-	 * @return		Eine "leere" Matrix
+	 * @param dim Dimension of the matrix
+	 * @throws IllegalArgumentException
 	 */
-	public static Matrix createZeroMatrix(int n)
-	{
-		return createZeroMatrix(n,n);
-	}
-
-	/**
-	 * Erzeugen einer neuen Matrix durch Werte aus einem zweidimensionalen Array 
-	 * 
-	 * @param rows	Reihen
-	 * @param cols	Spalten
-	 * @param mat	Werte der Matrix
-	 * @return		Eine Matrix gefuellt mit den Werten aus dem Array
-	 */
-	public static Matrix createMatrixFromArray(int rows, int cols, double mat[][])
-	{
-		Matrix M = new Matrix(rows, cols);
-		
-		try //Fuer den Fall, dass die angegebenen Array angaben falsch sind und eine OutOfBounds Exception geworfen wird  
-		{
-			for(int i=0;i<rows;i++)
-			{
-				for(int j=0;j<cols;j++)
-				{
-					M.mat[i][j] = mat[i][j];
-				}
-			}
-			
-		}
-		catch(Exception e)
-		{
-			M = null;
-		}
-		
-		return M;
-	}
-
-	/**
-	 * Erzeugen einer neuen quadratischen Matrix durch Werte aus einem zweidimensionalen Array 
-	 * 
-	 * @param n		Dimension der Matrix
-	 * @param mat	Werte der Matrix
-	 * @return		Eine Matrix gefuellt mit den Werten aus dem Array
-	 */
-	public static Matrix createMatrixFromArray(int n, double mat[][])
-	{
-		return createMatrixFromArray(n,n,mat);
-	}
-
-	
-	/**
-	 * Die Anzahl der Zeilen wird zurŸck gegeben
-	 * @return	Anzahl der Zeilen
-	 */
-	public int rows()
-	{
-		return rows;
-	}
-
-	/**
-	 * Die Anzahl der Spalten wird zurŸck gegeben
-	 * @return	Anzahl der Spalten
-	 */
-	public int cols()
-	{
-		return cols;
-	}
-
-
-	/**
-	 * Funktion fuer die Rueckgabe des Zelleninhalts
-	 * 
-	 * @param row	zu pruefende Zeile
-	 * @param col	zu pruefende Spalte
-	 * @return		der Inhalt der Zelle, bei Fehlern 0
-	 */
-	public double get(int row, int col)
-	{
-		if(row>=0 && row<rows && col>=0 && col<cols)
-		{
-			return mat[row][col];
-		}
-		
-		return 0;
-	}
-
-	/**
-	 * Der Zelleninhalt wird auf die entsprechende Variable gesetzt
-	 * 
-	 * @param row	zu setzende Zeile
-	 * @param col	zu setzende Spalte
-	 * @param val	Wert der in die Zelle geschrieben wird
-	 */
-	public void set(int row, int col, double val)
-	{
-		if(row>=0 && row<rows && col>=0 && col<cols)
-		{
-			mat[row][col] = val;
-		}
-	}
-
-	public void add(int row, int col, double val)
-	{
-		if(row>=0 && row<rows && col>=0 && col<cols)
-		{
-			mat[row][col] += val;
-		}
+	public Matrix(Dimension dim) throws IllegalArgumentException{
+		this.m = new double[dim.width][dim.height];
 	}
 	
 	/**
-	 * Vergleichen ob die Matrix die gleichen Werte wie eine andere hat
+	 * Takes values for the dimension of matrix and creates a matrix with them
 	 * 
-	 * @param obj 	Objekt(Matrix) die mit der aufrufenden Matrix zu vergleichen ist
-	 * @return		True wenn alles gleich ist, sonst false
+	 * @param x 
+	 * @param y
+	 * @throws IllegalArgumentException
 	 */
-	public boolean equals(Object obj)
-	{
-		if(!(obj instanceof Matrix))
-		{
-			return false;
+	public Matrix(int rows, int cols) throws IllegalArgumentException{
+		this.m = new double[rows][cols];
+	}
+	
+	/**
+	 * Returns the array of the matrix
+	 * @return
+	 */
+	public double[][] getM() {
+		return m;
+	}
+	
+	public int getRows() {
+		return m.length;
+	}
+	
+	public int getCols() {
+		return m[0].length;
+	}
+	
+	/**
+	 * Sets the array of the matrix
+	 * @param m
+	 */
+	public void setM(double[][] m) {
+		this.m = m;
+	}
+	
+	/**
+	 * Returns the Dimension of the matrix
+	 * @return
+	 */
+	public Dimension getDim() {
+		return new Dimension(m.length, m[0].length);
+	}
+	
+	/**
+	 * Returns the value M(x,y)
+	 * 
+	 * @param rows
+	 * @param cols
+	 * @return
+	 */
+	public double get(int rows, int cols) {
+		try {
+			return this.m[rows][cols];
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return 0;
 		}
 		
-		Matrix other = (Matrix)obj;
-
-		if(rows!=other.rows() || cols!=other.cols())
-		{
-			return false;
-		}
-		
-		for(int i=0;i<rows();i++)
-		{
-			for(int j=0;j<cols();j++)
-			{
-				if(get(i,j)!=other.get(i, j))
-				{
+	}
+	
+	/**
+	 * Sets the value M(x,y) = v
+	 * 
+	 * @param row
+	 * @param col
+	 * @param v
+	 */
+	public void set(int row, int col, double v) {
+		this.m[row][col] = v;
+	}
+	
+	/**
+	 * Transposes the matrix
+	 */
+	public Matrix transpose() {
+        double[][] temp = new double[this.m[0].length][this.m.length];
+        for (int row = 0; row < this.m.length; row++)
+            for (int col = 0; col < this.m[0].length; col++)
+                temp[col][row] = this.m[row][col];
+        return new Matrix(temp);
+    }
+	
+	/**
+	 * Checks if this matrix is equal to another matrix
+	 * @param B
+	 * @return
+	 */
+	public boolean equals(Matrix B) {
+		for(int row = 0; row < m.length; row++) {
+			for(int col = 0; col < m[0].length; col++) {
+				if(this.get(row, col) != B.get(row, col))
 					return false;
-				}
-			}			
+			}
 		}
-		
 		return true;
 	}
 	
 	/**
-	 * Ueberladen der toString Methode fuer einfachen Output
+	 * Returns a matrix with random values in the given size
 	 * 
-	 * @return	String reprasentation der Matrix
+	 * @param rows
+	 * @param cols
+	 * @param random
+	 * @return
 	 */
-	public String toString() {
-		String temp = String.format("Matrix %dx%d", rows, cols);
+	public static Matrix getRandomMatrix(int rows, int cols, Random random) {
+		Matrix m = new Matrix(rows, cols);
 		
-		temp +="\n";
-		
-		for(int i=0;i<rows();i++)
-		{
-			for(int j=0;j<cols();j++)
-			{
-				temp +=" "+get(i,j);
-			}			
-			temp +="\n";
+		for (int x = 0; x < rows; x++) {
+			for(int y = 0; y < cols; y++) {
+				m.set(x, y, random.nextDouble());
+			}
 		}
 		
-		return temp;
+		return m;
+	}
+	
+	/**
+	 * Converts the matrix to a String
+	 */
+	@Override
+	public String toString() {
+		String ret = "";
+		for(int i = 0; i < m.length; i++) {
+			ret += "| ";
+			for(int j = 0; j < m[0].length; j++) {
+				ret += m[i][j] + " ";
+			}
+			ret += " |\n";
+		}
+		return ret;
 	}
 }

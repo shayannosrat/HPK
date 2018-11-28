@@ -1,146 +1,87 @@
 package de.lab4inf.wrb.matrix;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.ArrayList;
 
-
-public class matParallel{
-	/**
-	 * Multiplizierer Runnable, um parallel Zellen der Matrix zu berechnen 
-	 */
-	private class MatMultiplierParCol implements Runnable{
-		private Matrix A, B, C;
-		private int i, j;
-		
-		/**
-		 * Konstruktor
-		 * 
-		 * @param _A			Matrix 1
-		 * @param _B			Matrix 2
-		 * @param _C			Ergebnis
-		 * @param _i			Reihe
-		 * @param _j			Spalte
-		 * @param _iMaxThreads 	Anzahl der Maximal gleichzeitig laufenden MultipierCol Threads
-		 */
-		public MatMultiplierParCol(Matrix _A, Matrix _B, Matrix _C, int _i, int _j)
-		{
-			A = _A;
-			B = _B;
-			C = _C;
-			i = _i;
-			j = _j;
-		}
-		
-		/**
-		 * Ausfuehren der Multiplikation
-		 */
-		public void run()
-		{
-			int  cols = A.cols();
-			for(int k = 0; k<cols;k++)
-			{
-				C.add(i, j, A.get(i, k) * B.get(k, j));
-			}
-		}
-	}
+public class matParallel {
 	
 	/**
-	 * Multiplizierer Runnable, welche parallel Spalten Rechner erstellt 
-	 */
-	private class MatMultiplierParRow implements Runnable{
-		private Matrix A, B, C;
-		private int i, iMaxThreads;
-		
-		/**
-		 * Konstruktor
-		 * 
-		 * @param _A			Matrix 1
-		 * @param _B			Matrix 2
-		 * @param _C			Ergebnis
-		 * @param _i			Reihe
-		 * @param _iMaxThreads 	Anzahl der Maximal gleichzeitig laufenden MultipierCol Threads
-		 */
-		public MatMultiplierParRow(Matrix _A, Matrix _B, Matrix _C, int _i, int _iMaxThreads)
-		{
-			A = _A;
-			B = _B;
-			C = _C;
-			i = _i;
-			iMaxThreads = _iMaxThreads;
-		}
-		
-		/**
-		 * Ausfuehren der Multiplikation
-		 */
-		public void run()
-		{
-			ExecutorService threadPool = Executors.newFixedThreadPool(iMaxThreads);
-			Collection<Future<?>> futures = new LinkedList<Future<?>>();
-			
-			int  cols = B.cols();
-	
-			for(int j = 0; j<cols;j++)
-			{
-				MatMultiplierParCol newMulti = new MatMultiplierParCol(A,B,C,i,j);
-				futures.add(threadPool.submit(newMulti));
-			}
-			
-			for (Future<?> future:futures) {
-			    try {
-					future.get();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ExecutionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-
-	
-	
-	/**
-	 * Konstruktor zur parallelen Matrix-multiplikation AxB
+	 * Parallele Matrizenmultiplikation für die Matrizen A, B
 	 * 
-	 * @param A				Matrix 1
-	 * @param B				Matrix 2
-	 * @param result		Ergebnis der Multiplikation
-	 * @param _iMaxThreads	Wie viele Threads die Pools haben sollen
-	 * @return				False wenn ein Fehler aufgetreten ist, sonst True
+	 * @param A
+	 * @param B
+	 * @return
+	 * @throws IllegalArgumentException
+	 * @throws RuntimeException
 	 */
-	public matParallel(Matrix A, Matrix B, Matrix result, int _iMaxThreads)
-	{
-		if(A.rows()!=B.cols() || result.rows()!=A.rows() || result.cols()!=B.cols())
-		{
-			return;
-		}
+	public static Matrix multiply(Matrix A, Matrix B) throws IllegalArgumentException, RuntimeException {	
+		/*
+		 * Fehlerbehandlung
+		 */
 		
-		ExecutorService threadPool = Executors.newFixedThreadPool(_iMaxThreads);
-		Collection<Future<?>> futures = new LinkedList<Future<?>>();
+		if(A.getM() == null || B.getM() == null)
+			throw new IllegalArgumentException("Matrizen können nicht null sein");
+		
+		if(A.getCols() != B.getRows())
+			throw new IllegalArgumentException("Matrizen sind nicht kompatibel für Matrix-Multiplication");
+		
+		/*
+		 * Setup
+		 */
+		
+		Matrix res = new Matrix(A.getRows(), B.getCols());
+		
+		Matrix D = B.transpose();
+		
+		ArrayList<MultiplyThread> threads = new ArrayList<>();
+		
+		/**
+		 * Paralleler Teil
+		 */
+		
+		for(int i = 0; i < A.getRows(); i++) {
+			MultiplyThread thread = new MultiplyThread(i, B.getCols(), A, D, res);
+			threads.add(thread);
+			thread.start();
+		}
 
-		int rows = A.rows();
+		/**
+		 * Zusammenführen
+		 */
 		
-		for(int i = 0; i<rows;i++)
-		{
-			MatMultiplierParRow newMulti = new MatMultiplierParRow(A,B,result,i,_iMaxThreads);
-			futures.add(threadPool.submit(newMulti));
-		}
-	
-		for (Future<?> future:futures) {
-		    try {
-				future.get();
+		for(MultiplyThread thread : threads) {
+			try {
+				thread.join();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new RuntimeException("Thread got interrupted!");
+			}
+		}
+		
+		return res;
+	}	
+	
+	private static class MultiplyThread extends Thread {
+		private final int i;
+		private final int b_col;
+		private final Matrix A;
+		private final Matrix D;
+		private final Matrix res;
+		
+		public MultiplyThread(int i, int b_col, Matrix A, Matrix D, Matrix res)  {
+			this.i = i;
+			this.b_col = b_col;
+			this.A = A;
+			this.D = D;
+			this.res = res;
+		}
+		
+		@Override
+		public void run() {
+			for(int j = 0; j < b_col; j++) {
+				double sum = .0;
+				for(int k = 0; k < A.getCols(); k++) {
+					sum += A.get(i, k) * D.get(j, k);
+				}
+				res.set(i, j, sum);
 			}
 		}
 	}

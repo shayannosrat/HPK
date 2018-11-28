@@ -1,47 +1,34 @@
 package de.lab4inf.wrb.matrix;
 
-/**
- * Sequentieller Matrix Multiplier 
- * 
- * @author Pascal Krabbe & Rene Behring
- */
+
 public class matSeriell{
-	/**
-	 * 
-	 * Multipliziert zwei Matrizen und schreibt das Ergebnis in result
-	 *  
-	 * @param A			Matrix 1
-	 * @param B			Matrix 2
-	 * 
-	 */
-	public static Matrix matSeriell(Matrix A, Matrix B) throws IllegalArgumentException
-	{
+	public static Matrix multiply(Matrix A, Matrix B) throws IllegalArgumentException {
+		/*
+		 * Fehlerbehandlung
+		 */
 		
-		if(A == null || B == null)
+		if(A.getM() == null || B.getM() == null)
 			throw new IllegalArgumentException("Matrizen können nicht null sein");
 		
-		if(A.cols() != B.rows())
+		if(A.getCols() != B.getRows())
 			throw new IllegalArgumentException("Matrizen sind nicht kompatibel für Matrix-Multiplication");
 		
+		/**
+		 * Algo
+		 */
 		
+		Matrix res = new Matrix(A.getRows(), B.getCols());
 		
-		Matrix result = Matrix.createZeroMatrix(A.rows(), B.cols());
-		
-		/*if(A.rows()!=B.cols() || result.rows()!=A.rows() || result.cols()!=B.cols())
-		{
-			return;
-		}*/
-
-		for(int i=0; i<A.rows(); i++)
-		{
-			for(int j=0; j< B.cols(); j++)
-			{
-				for(int k=0; k<A.cols(); k++)
-				{
-					result.add(i, j, A.get(i,k)*B.get(k,j));
+		for(int rowA = 0; rowA < A.getRows(); rowA++) {
+			for(int colB = 0; colB < B.getCols(); colB++) {
+				double sum = .0;
+				for(int colA = 0; colA < A.getCols(); colA++) {
+					sum += A.get(rowA, colA) * B.get(colA, colB);
 				}
+				res.set(rowA, colB, sum);
 			}
 		}
-		return result;
+		
+		return res;
 	}
 }
