@@ -353,7 +353,7 @@ public class MatrixMultTest {
 		long serial, parallel, dnq;
 		double serialS, parallelS, dnqS;
 		int runs = 256;
-		final double SCALED = -1*runs;
+		double SCALED = -256;
 		Random rnd = new Random();
 		Matrix a, b, resSerial = null, resParallel = null, resDnd = null;
 		
@@ -361,7 +361,7 @@ public class MatrixMultTest {
 		
 		
 		
-		for(int k=0; k < 9; k++, runs /= 2) {
+		for(int k=0; k < 9; k++, runs /= 2, SCALED= -runs) {
 			
 			long calcTimes[] = new long[runs];
 			a = Matrix.getRandomMatrix(matrixDimension[k] -1, matrixDimension[k] + 1, rnd);
@@ -373,8 +373,7 @@ public class MatrixMultTest {
 				calcTimes[i] -= System.nanoTime();
 			}
 			
-			serial = LongStream.of(calcTimes).sum() / runs;
-			serial /= SCALED;
+			serial = (LongStream.of(calcTimes).sum() / runs)*-1;
 			serialS = serial / 1E9;
 			
 			for(int i = 0; i < runs; i++) {
@@ -386,8 +385,7 @@ public class MatrixMultTest {
 			//assertTrue(resParallel.equals(resSerial));
 			checkDoubleMatrixEqual(resParallel, resSerial);
 			
-			parallel = LongStream.of(calcTimes).sum() / runs;
-			parallel /= SCALED;
+			parallel = (LongStream.of(calcTimes).sum() / runs)*-1;
 			parallelS = parallel / 1E9;
 			
 			for(int i = 0; i < runs; i++) {
@@ -398,8 +396,7 @@ public class MatrixMultTest {
 			
 			checkDoubleMatrixEqual(resDnd, resSerial);
 			
-			dnq = LongStream.of(calcTimes).sum() / runs;
-			dnq /= SCALED;
+			dnq = (LongStream.of(calcTimes).sum() / runs)*-1;
 			dnqS = dnq / 1E9;
 			
 			double speedupParallel = (double)serial/parallel;
