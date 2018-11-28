@@ -81,7 +81,6 @@ public class MatrixMultTest {
 	 * Tests the split function for a 5x4 Matrix
 	 */
 	@Test
-	@Ignore
 	public void testSplitOddMatrix5x4() {
 		
 		Matrix[][] res = new Matrix[2][2];
@@ -119,47 +118,7 @@ public class MatrixMultTest {
 		
 	}
 	
-	/**
-	 * Tests the split function for a 4x5 Matrix
-	 */
-	@Test
-	@Ignore
-	public void testSplitOddMatrix4x5() {
-		
-		Matrix[][] res = new Matrix[2][2];
-		Matrix[][] test = new Matrix[2][2];
-		
-		double[][] a = new double[][] {{1,2,3,4,5}, {2,3,4,5,6}, {1,2,3,4,5}, {2,3,4,5,6}};
-		
-		double [][] res1  = new double[][] {{1,2,3},{2,3,4},{1,2,3}};
-		double [][] res2  = new double[][] {{4,5},{5,6},{4,5}};
-		double [][] res3  = new double[][] {{2,3,4},{0,0,0}};
-		double [][] res4  = new double[][] {{5,6},{0,0}};
-		
-		Matrix A = new Matrix(a);
-		
-		res[0][0] = new Matrix(res1);
-		res[0][1] = new Matrix(res2);
-		res[1][0] = new Matrix(res3);
-		res[1][1] = new Matrix(res4);
-		
-		
-		test = matDivideConquer.split(A);
-		
-		/*
-		System.out.println("Erwartetes Ergebnis:\n" + res.toString());
-		System.out.println("Ergebnis: \n" + test[0][0].toString());
-		System.out.println("Ergebnis: \n" + test[0][1].toString());
-		System.out.println("Ergebnis: \n" + test[1][0].toString());
-		System.out.println("Ergebnis: \n" + test[1][1].toString());
-		*/
-			
-		assertTrue(test[0][0].equals(res[0][0]));
-		assertTrue(test[0][1].equals(res[0][1]));
-		assertTrue(test[1][0].equals(res[1][0]));
-		assertTrue(test[1][1].equals(res[1][1]));
-		
-	}
+
 	
 		/**
 	 * Tests the merge function for a quadratic Matrix
@@ -392,17 +351,20 @@ public class MatrixMultTest {
 	public void testMatrixMultiplicationSpeedup() {
 		System.err.println("TIME TEST");
 		long serial, parallel, dnd;
-		int runs = 100;
+		int runs = 256;
 		final double SCALED = -1*runs;
 		Random rnd = new Random();
 		Matrix a, b, resSerial = null, resParallel = null, resDnd = null;
 		
-		int matrixDimension = 64;
+		int matrixDimension[] = new int[] {64, 128, 256, 512, 768, 1024, 1536, 2048, 4096};
 		
-		while(matrixDimension <= 2048) {
+		
+		
+		for(int k=0; k < 9; k++, runs /= 2) {
+			
 			long calcTimes[] = new long[runs];
-			a = Matrix.getRandomMatrix(matrixDimension + 1, matrixDimension, rnd);
-			b = Matrix.getRandomMatrix(matrixDimension, matrixDimension + 1, rnd);
+			a = Matrix.getRandomMatrix(matrixDimension[k] -1, matrixDimension[k] + 1, rnd);
+			b = Matrix.getRandomMatrix(matrixDimension[k] +1, matrixDimension[k] -1, rnd);
 			
 			for(int i = 0; i < runs; i++) {
 				calcTimes[i] = System.nanoTime();
@@ -438,10 +400,9 @@ public class MatrixMultTest {
 			
 			double speedupParallel = (double)serial/parallel;
 			double speedupDnd = (double)serial/dnd;
-			System.err.println(matrixDimension + "x" + (matrixDimension+1) + " Runs: " + runs + "\n--- serial: " + serial + " \n--- parallel: " + parallel + " --- speedup: " + speedupParallel + "\n--- divide and conquer: " + dnd + " --- speedup: " + speedupDnd);
+			System.err.println(matrixDimension[k] - 1 + "x" + (matrixDimension[k]+1) + " Runs: " + runs + "\n--- serial: " + serial + " \n--- parallel: " + parallel + " --- speedup: " + speedupParallel + "\n--- divide and conquer: " + dnd + " --- speedup: " + speedupDnd);
 			
-			matrixDimension *= 2;
-			runs /= 4;
+			
 			
 			if(runs == 0)
 				runs = 1;
