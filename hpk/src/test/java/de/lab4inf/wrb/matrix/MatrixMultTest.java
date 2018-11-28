@@ -350,7 +350,8 @@ public class MatrixMultTest {
 	@Test
 	public void testMatrixMultiplicationSpeedup() {
 		System.err.println("TIME TEST");
-		long serial, parallel, dnd;
+		long serial, parallel, dnq;
+		double serialS, parallelS, dnqS;
 		int runs = 256;
 		final double SCALED = -1*runs;
 		Random rnd = new Random();
@@ -374,6 +375,7 @@ public class MatrixMultTest {
 			
 			serial = LongStream.of(calcTimes).sum() / runs;
 			serial /= SCALED;
+			serialS = serial / 1E9;
 			
 			for(int i = 0; i < runs; i++) {
 				calcTimes[i] = System.nanoTime();
@@ -386,6 +388,7 @@ public class MatrixMultTest {
 			
 			parallel = LongStream.of(calcTimes).sum() / runs;
 			parallel /= SCALED;
+			parallelS = parallel / 1E9;
 			
 			for(int i = 0; i < runs; i++) {
 				calcTimes[i] = System.nanoTime();
@@ -395,12 +398,13 @@ public class MatrixMultTest {
 			
 			checkDoubleMatrixEqual(resDnd, resSerial);
 			
-			dnd = LongStream.of(calcTimes).sum() / runs;
-			dnd /= SCALED;
+			dnq = LongStream.of(calcTimes).sum() / runs;
+			dnq /= SCALED;
+			dnqS = dnq / 1E9;
 			
 			double speedupParallel = (double)serial/parallel;
-			double speedupDnd = (double)serial/dnd;
-			System.err.println(matrixDimension[k] - 1 + "x" + (matrixDimension[k]+1) + " Runs: " + runs + "\n--- serial: " + serial + " \n--- parallel: " + parallel + " --- speedup: " + speedupParallel + "\n--- divide and conquer: " + dnd + " --- speedup: " + speedupDnd);
+			double speedupDnd = (double)serial/dnq;
+			System.err.println(matrixDimension[k] - 1 + "x" + (matrixDimension[k]+1) + " Runs: " + runs + "\n--- serial: " + serialS + " \n--- parallel: " + parallelS + " --- speedup: " + speedupParallel + "\n--- divide and conquer: " + dnqS + " --- speedup: " + speedupDnd);
 			
 			
 			
