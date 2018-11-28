@@ -7,7 +7,7 @@ import java.util.stream.DoubleStream;
 
 import de.lab4inf.wrb.WRBFunction.MathFunction;
 import de.lab4inf.wrb.matrix.Matrix;
-import de.lab4inf.wrb.matrix.ParallelMultiplier;
+import de.lab4inf.wrb.matrix.matParallel;
 import java.util.ArrayList;
 
 public class WRBObserver extends WRBBaseVisitor<Double> {
@@ -123,7 +123,7 @@ public class WRBObserver extends WRBBaseVisitor<Double> {
 		A = new Matrix(a);
 		B = new Matrix(b);
 		
-		Matrix res = ParallelMultiplier.multiply(A, B);
+		Matrix res = matParallel.multiply(A, B);
 		
 		System.out.println(res.toString());
 		

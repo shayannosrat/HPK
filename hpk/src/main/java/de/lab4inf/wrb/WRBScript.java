@@ -107,35 +107,6 @@ public class WRBScript implements Script {
 		MathFuncMemory.put("tanh",tanh);
 	}
 	
-	/*{
-	MathFuncMemory.put("abs",abs);
-	MathFuncMemory.put("acos",acos);
-	MathFuncMemory.put("asin",asin);
-	MathFuncMemory.put("atan",atan);
-	MathFuncMemory.put("cbrt",cbrt);
-	MathFuncMemory.put("ceil",ceil);
-	MathFuncMemory.put("cos",cos);
-	MathFuncMemory.put("cosh",cosh);
-	MathFuncMemory.put("exp",exp);
-	MathFuncMemory.put("expm1",expm1);
-	MathFuncMemory.put("floor",floor);
-	MathFuncMemory.put("ln",ln);
-	MathFuncMemory.put("loge",loge);
-	MathFuncMemory.put("log",log);
-	MathFuncMemory.put("log10",log10);
-	MathFuncMemory.put("log2",log2);
-	MathFuncMemory.put("ld",ld);
-	MathFuncMemory.put("lb",lb);
-	MathFuncMemory.put("pow",pow);
-	MathFuncMemory.put("rint",rint);
-	MathFuncMemory.put("signum",signum);
-	MathFuncMemory.put("sin",sin);
-	MathFuncMemory.put("sinh",sinh);
-	MathFuncMemory.put("sqrt",sqrt);
-	MathFuncMemory.put("tan",tan);
-	MathFuncMemory.put("tanh",tanh);
-	}*/
-	
 	private static double lastResult;
 	
 	public WRBScript() {

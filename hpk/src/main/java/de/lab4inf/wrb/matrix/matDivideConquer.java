@@ -4,7 +4,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class DivideNConquerMultiplier {
+public class matDivideConquer {
 	
 	public static Matrix multiply(Matrix A, Matrix B) throws IllegalArgumentException, RuntimeException {
 		/*
@@ -219,7 +219,7 @@ public class DivideNConquerMultiplier {
 	
 	/**
 	 * Thread für die 8 Multiplikationen
-	 * @author Till Kobbe
+	 * 
 	 *
 	 */
 	private static class MultiplyThread implements Runnable {
@@ -256,7 +256,7 @@ public class DivideNConquerMultiplier {
 	
 	/**
 	 * Thread für das addieren der Matrizen
-	 * @author Till Kobbe
+	 * 
 	 *
 	 */
 	private static class AddThread implements Runnable {
