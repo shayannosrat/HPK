@@ -358,7 +358,7 @@ public class MatrixMultTest {
 		
 		int matrixDimension[] = new int[] {64, 128, 256, 512, 768, 1024, 1536, 2048, 4096};
 		
-		
+		System.out.printf("\nrepitions | dimension     | serial/s     | parallel/s      | speedup      | DnQ | DnQ Speedup\n");
 		
 		for(int k=0; k < 9; k++, runs /= 2) {
 			
@@ -399,15 +399,20 @@ public class MatrixMultTest {
 			
 			double speedupParallel = (double)serial/parallel;
 			double speedupDnq = (double)serial/dnq;
-			System.err.println(matrixDimension[k] - 1 + "x" + (matrixDimension[k]+1) + " Runs: " + runs + 
+			/*System.err.printf(matrixDimension[k] - 1 + "x" + (matrixDimension[k]+1) + " Runs: " + runs + 
 					"\n--- matSerial / s: " + serialS + 
 					"\n--- matParallel / s: " + parallelS + " --- speedup: " + speedupParallel + 
 					"\n--- matDivideConquer / s: " + dnqS + " --- speedup: " + speedupDnq);
+			*/
+			
+			System.out.printf("%10d| %5d x %5d |  %10.4f  |      %10.4f | %10.1f |%10.4f | %10.1f\n", runs, matrixDimension[k]-1, matrixDimension[k]+1, serialS, parallelS, speedupParallel, dnqS, speedupDnq);
+			
 			
 			if(runs == 0)
 				runs = 1;
 		}
 	}
+	
 	
 	/*
 	 * Hilfsfunktion um Matrix mit double besser auswerten zu können,

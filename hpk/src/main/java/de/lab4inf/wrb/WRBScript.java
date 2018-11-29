@@ -49,13 +49,8 @@ public class WRBScript implements Script {
 	MathFuncMemory.put("tanh",(value) -> Math.tanh(value[0]));}
 	final WRBObserver ob = new WRBObserver(this);
 
-	WRBScript(WRBObserver ob) {
-	    ob = this.ob;	
-	}
 	
-	WRBScript (){
-		
-	}
+
 	
 	/**
      * Parse the given String into an internal representation and
