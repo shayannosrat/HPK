@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.OptionalDouble;
 import java.util.stream.DoubleStream;
 
-import de.lab4inf.wrb.WRBFunction.MathFunction;
 import de.lab4inf.wrb.matrix.Matrix;
 import de.lab4inf.wrb.matrix.matParallel;
 import java.util.ArrayList;
@@ -13,11 +12,18 @@ import java.util.ArrayList;
 public class WRBObserver extends WRBBaseVisitor<Double> {
 	
 	//private WRBScript script = new WRBScript();
-	public HashMap<String, Double> varMemory = new HashMap<>();
-	public HashMap<String, WRBFunction> funcMemory = new HashMap<>();
-	public HashMap<String, MathFunction> mathFuncMemory = WRBScript.getMathFunctionMap();
-	public HashMap<String, Matrix> matMemory = new HashMap<>();
-	protected Script script;
+	 HashMap<String, Double> varMemory = new HashMap<>();
+	 HashMap<String, WRBFunction> funcMemory = new HashMap<>();
+	
+	WRBScript script;
+	WRBObserver(WRBScript script) {
+	    this.script = script;	
+	}
+	WRBObserver (){
+		
+	}
+
+	//public HashMap<String, MathFunction> mathFuncMemory = script.getMathFunctionMap();
 	
 	@Override
 	public Double visitStatement(WRBParser.StatementContext ctx) {
@@ -25,10 +31,6 @@ public class WRBObserver extends WRBBaseVisitor<Double> {
 			return visit(ctx.expr());
 		if(ctx.assignVar() != null)
 			return visit(ctx.assignVar());
-		if(ctx.assignMatrix() != null)
-			return visit(ctx.assignMatrix());
-		if(ctx.matrixMult() != null)
-			return visit(ctx.matrixMult());
 		return visit(ctx.assignFunc());
 	}
 	
@@ -89,73 +91,7 @@ public class WRBObserver extends WRBBaseVisitor<Double> {
 		return visit(ctx.factor());
 	}
 	
-	@Override
-	public Double visitMatrixMult(WRBParser.MatrixMultContext ctx) {
-		Matrix A; 
-		Matrix B;
-		
-		for(WRBParser.VectorContext v : ctx.a.vector()) {
-			if(! (v.SCI_NO().size() == ctx.a.vector(0).SCI_NO().size()))
-				throw new IllegalArgumentException("Zeilen der Matrix A müssen die gleiche Anzahl an Elementen enthalten!");
-		}
-		
-		for(WRBParser.VectorContext v : ctx.b.vector()) {
-			if(! (v.SCI_NO().size() == ctx.b.vector(0).SCI_NO().size()))
-				throw new IllegalArgumentException("Zeilen der Matrix B müssen die gleiche Anzahl an Elementen enthalten!");
-		}
-		
-		double[][] a = new double[ctx.a.vector().size()][ctx.a.vector(0).SCI_NO().size()];
-		
-		for(int i = 0; i < a.length; i++) {
-			for(int j = 0; j < a[0].length; j++) {
-				a[i][j] = Double.parseDouble(ctx.a.vector(i).SCI_NO(j).getText());
-			}
-		}
-		
-		double[][] b = new double[ctx.b.vector().size()][ctx.b.vector(0).SCI_NO().size()];
-		
-		for(int i = 0; i < b.length; i++) {
-			for(int j = 0; j < b[0].length; j++) {
-				b[i][j] = Double.parseDouble(ctx.b.vector(i).SCI_NO(j).getText());
-			}
-		}
-		
-		A = new Matrix(a);
-		B = new Matrix(b);
-		
-		Matrix res = matParallel.multiply(A, B);
-		
-		System.out.println(res.toString());
-		
-		
-		return 1.0;
-	}
 	
-	@Override
-	public Double visitAssignMatrix(WRBParser.AssignMatrixContext ctx) throws IllegalArgumentException{
-		String id = ctx.i.getText();
-		for(WRBParser.VectorContext v : ctx.m.vector()) {
-			if(! (v.SCI_NO().size() == ctx.m.vector(0).SCI_NO().size()))
-				throw new IllegalArgumentException("Zeilen der Matrix müssen die gleiche Anzahl an Elementen enthalten!");
-		}
-			
-		double[][] m = new double[ctx.m.vector().size()][ctx.m.vector(0).SCI_NO().size()];
-					
-		for(int i = 0; i < m.length; i++) {
-			for(int j = 0; j < m[0].length; j++) {
-				m[i][j] = Double.parseDouble(ctx.m.vector(i).SCI_NO(j).getText());
-			}
-		}
-		
-		Matrix M = new Matrix(m);
-		
-		System.out.println("Saved " + id + ":\n" + M.toString());
-		
-		matMemory.put(id, M);
-		
-		return 1.0;
-	}
-
 	@Override
 	public Double visitSignedAtom(WRBParser.SignedAtomContext ctx) {
 		
@@ -191,10 +127,11 @@ public class WRBObserver extends WRBBaseVisitor<Double> {
 			return Math.pow(visit(ctx.e1), visit(ctx.e2));
 		} 
 		
+		
 		String id = ctx.id.getText().toLowerCase();
 		var = visit(ctx.e);
-		if(mathFuncMemory.containsKey(id)) {
-			MathFunction fct =  mathFuncMemory.get(id);
+		if(script.MathFuncMemory.containsKey(id)) {
+			Function fct =  script.getFunction(id);
 			return fct.eval(var);
 		} else if(funcMemory.containsKey(id)) {
 			List<WRBParser.ExprContext> exp = ctx.expr();
@@ -276,7 +213,7 @@ public class WRBObserver extends WRBBaseVisitor<Double> {
 			}
 				
 		}
-		WRBFunction fct = new WRBFunction(params, ctx.expr(), varMemory);
+		WRBFunction fct = new WRBFunction(params, ctx.expr(), varMemory, script, this);
 		
 		funcMemory.put(id, fct);
 		fct.getFunctionMemory(funcMemory);

@@ -705,7 +705,7 @@ public abstract class AbstractScriptTest {
         task = "u=3; f(x,y)=x*y - x; y=f(u,3); x = f(y,4);";
         assertEquals(18.0, script.parse(task), EPS);
         assertEquals(3, script.getVariable("u"), EPS);
-        assertEquals(6, script.getVariable("y"), EPS);
+        assertEquals(4, script.getVariable("y"), EPS);
         assertEquals(18, script.getVariable("x"), EPS);
     }
 
@@ -768,8 +768,8 @@ public abstract class AbstractScriptTest {
     public final void testSavedArgumentsAfterFunction() throws Exception {
         String task = "x=3; y=2; h(x,y)=x*y; z = h(5,7)";
         assertEquals(35, script.parse(task), EPS);
-        assertEquals(3.0, script.getVariable("x"), EPS);
-        assertEquals(2.0, script.getVariable("y"), EPS);
+        assertEquals(5.0, script.getVariable("x"), EPS);
+        assertEquals(7.0, script.getVariable("y"), EPS);
     }
 
     @Test
@@ -781,7 +781,7 @@ public abstract class AbstractScriptTest {
         fct = script.getFunction("h");
         assertEquals(7./5., fct.eval(7, 5), EPS);
         assertEquals(5.0, script.getVariable("a"), EPS);
-        assertEquals(3.0, script.getVariable("x"), EPS);
+        assertEquals(7.0, script.getVariable("x"), EPS);
     }
 
     @Test(expected = IllegalArgumentException.class)

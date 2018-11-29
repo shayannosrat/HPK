@@ -1,4 +1,4 @@
-// Generated from de\lab4inf\wrb\WRB.g4 by ANTLR 4.7
+// Generated from de/lab4inf/wrb/WRB.g4 by ANTLR 4.7
 package de.lab4inf.wrb;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -124,28 +124,4 @@ public interface WRBVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitAssignVar(WRBParser.AssignVarContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link WRBParser#matrixMult}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitMatrixMult(WRBParser.MatrixMultContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link WRBParser#assignMatrix}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAssignMatrix(WRBParser.AssignMatrixContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link WRBParser#vector}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitVector(WRBParser.VectorContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link WRBParser#matrix}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitMatrix(WRBParser.MatrixContext ctx);
 }

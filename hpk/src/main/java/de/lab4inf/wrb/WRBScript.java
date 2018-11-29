@@ -12,106 +12,48 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 
-import de.lab4inf.wrb.WRBFunction.MathFunction;
+
 
 
 public class WRBScript implements Script {
+	
 	private WRBParser.RunContext r;
 	private WRBParser parser = new WRBParser(null);
-	private final WRBObserver ob = new WRBObserver();
 	
-	
-	
-	static MathFunction abs = (value) -> Math.abs(value[0]);
-	static MathFunction acos = (value) -> Math.acos(value[0]);
-	static MathFunction asin = (value) -> Math.asin(value[0]);
-	static MathFunction atan = (value) -> Math.atan(value[0]);
-	static MathFunction cbrt = (value) -> Math.cbrt(value[0]);
-	static MathFunction ceil = (value) -> Math.ceil(value[0]);
-	static MathFunction cos = (value) -> Math.cos(value[0]);
-	static MathFunction cosh = (value) -> Math.cosh(value[0]);
-	static MathFunction exp = (value) -> Math.exp(value[0]);
-	static MathFunction expm1 = (value) -> Math.expm1(value[0]);
-	static MathFunction floor = (value) -> Math.floor(value[0]);
-	static MathFunction ln = (value) -> Math.log(value[0]);
-	static MathFunction loge = (value) -> Math.log(value[0]);
-	static MathFunction log = (value) -> Math.log10(value[0]);
-	static MathFunction log10 = (value) -> Math.log10(value[0]);
-	static MathFunction log2 = (value) -> Math.log(value[0])/Math.log(2);
-	static MathFunction ld = (value) -> Math.log(value[0])/Math.log(2);
-	static MathFunction lb = (value) -> Math.log(value[0])/Math.log(2);
-	static MathFunction pow = (value) -> Math.pow(value[0], value[1]);
-	static MathFunction rint = (value) -> Math.rint(value[0]);
-	static MathFunction signum = (value) -> Math.signum(value[0]);
-	static MathFunction sin = (value) -> Math.sin(value[0]);
-	static MathFunction sinh = (value) -> Math.sinh(value[0]);
-	static MathFunction sqrt = (value) -> Math.sqrt(value[0]);
-	static MathFunction tan = (value) -> Math.tan(value[0]);
-	static MathFunction tanh = (value) -> Math.tanh(value[0]);
-	
-	/* MathFunction abs = (value) -> Math.abs(value[0]);
-	 MathFunction acos = (value) -> Math.acos(value[0]);
-	 MathFunction asin = (value) -> Math.asin(value[0]);
-	 MathFunction atan = (value) -> Math.atan(value[0]);
-	 MathFunction cbrt = (value) -> Math.cbrt(value[0]);
-	 MathFunction ceil = (value) -> Math.ceil(value[0]);
-	 MathFunction cos = (value) -> Math.cos(value[0]);
-	 MathFunction cosh = (value) -> Math.cosh(value[0]);
-	 MathFunction exp = (value) -> Math.exp(value[0]);
-	 MathFunction expm1 = (value) -> Math.expm1(value[0]);
-	 MathFunction floor = (value) -> Math.floor(value[0]);
-	 MathFunction ln = (value) -> Math.log(value[0]);
-	 MathFunction loge = (value) -> Math.log(value[0]);
-	 MathFunction log = (value) -> Math.log10(value[0]);
-	 MathFunction log10 = (value) -> Math.log10(value[0]);
-	 MathFunction log2 = (value) -> Math.log(value[0]);
-	 MathFunction ld = (value) -> Math.log(value[0]);
-	 MathFunction lb = (value) -> Math.log(value[0]);
-	 MathFunction pow = (value) -> Math.pow(value[0], value[1]);
-	 MathFunction rint = (value) -> Math.rint(value[0]);
-	 MathFunction signum = (value) -> Math.signum(value[0]);
-	 MathFunction sin = (value) -> Math.sin(value[0]);
-	 MathFunction sinh = (value) -> Math.sinh(value[0]);
-	 MathFunction sqrt = (value) -> Math.sqrt(value[0]);
-	 MathFunction tan = (value) -> Math.tan(value[0]);
-	 MathFunction tanh = (value) -> Math.tanh(value[0]);*/
-	
-	public static HashMap<String, MathFunction> MathFuncMemory = new HashMap<>();
-	static {
-		MathFuncMemory = new HashMap<>();
-		MathFuncMemory.put("abs",abs);
-		MathFuncMemory.put("acos",acos);
-		MathFuncMemory.put("asin",asin);
-		MathFuncMemory.put("atan",atan);
-		MathFuncMemory.put("cbrt",cbrt);
-		MathFuncMemory.put("ceil",ceil);
-		MathFuncMemory.put("cos",cos);
-		MathFuncMemory.put("cosh",cosh);
-		MathFuncMemory.put("exp",exp);
-		MathFuncMemory.put("expm1",expm1);
-		MathFuncMemory.put("floor",floor);
-		MathFuncMemory.put("ln",ln);
-		MathFuncMemory.put("loge",loge);
-		MathFuncMemory.put("log",log);
-		MathFuncMemory.put("log10",log10);
-		MathFuncMemory.put("log2",log2);
-		MathFuncMemory.put("ld",ld);
-		MathFuncMemory.put("lb",lb);
-		MathFuncMemory.put("pow",pow);
-		MathFuncMemory.put("rint",rint);
-		MathFuncMemory.put("signum",signum);
-		MathFuncMemory.put("sin",sin);
-		MathFuncMemory.put("sinh",sinh);
-		MathFuncMemory.put("sqrt",sqrt);
-		MathFuncMemory.put("tan",tan);
-		MathFuncMemory.put("tanh",tanh);
+	HashMap<String, Function> MathFuncMemory = new HashMap<>();{
+	MathFuncMemory.put("abs",(value) -> Math.abs(value[0]));
+	MathFuncMemory.put("acos",(value) -> Math.acos(value[0]));
+	MathFuncMemory.put("asin",(value) -> Math.asin(value[0]));
+	MathFuncMemory.put("atan",(value) -> Math.atan(value[0]));
+	MathFuncMemory.put("cbrt",(value) -> Math.cbrt(value[0]));
+	MathFuncMemory.put("ceil",(value) -> Math.ceil(value[0]));
+	MathFuncMemory.put("cos",(value) -> Math.cos(value[0]));
+	MathFuncMemory.put("cosh",(value) -> Math.cosh(value[0]));
+	MathFuncMemory.put("exp",(value) -> Math.exp(value[0]));
+	MathFuncMemory.put("expm1",(value) -> Math.expm1(value[0]));
+	MathFuncMemory.put("floor",(value) -> Math.floor(value[0]));
+	MathFuncMemory.put("ln",(value) -> Math.log(value[0]));
+	MathFuncMemory.put("loge",(value) -> Math.log(value[0]));
+	MathFuncMemory.put("log",(value) -> Math.log10(value[0]));
+	MathFuncMemory.put("log10",(value) -> Math.log10(value[0]));
+	MathFuncMemory.put("log2",(value) -> Math.log(value[0])/Math.log(2));
+	MathFuncMemory.put("ld",(value) -> Math.log(value[0])/Math.log(2));
+	MathFuncMemory.put("lb",(value) -> Math.log(value[0])/Math.log(2));
+	MathFuncMemory.put("pow",(value) -> Math.pow(value[0], value[1]));
+	MathFuncMemory.put("rint",(value) -> Math.rint(value[0]));
+	MathFuncMemory.put("signum",(value) -> Math.signum(value[0]));
+	MathFuncMemory.put("sin",(value) -> Math.sin(value[0]));
+	MathFuncMemory.put("sinh",(value) -> Math.sinh(value[0]));
+	MathFuncMemory.put("sqrt",(value) -> Math.sqrt(value[0]));
+	MathFuncMemory.put("tan",(value) -> Math.tan(value[0]));
+	MathFuncMemory.put("tanh",(value) -> Math.tanh(value[0]));}
+	final WRBObserver ob = new WRBObserver(this);
+
+	WRBScript(WRBObserver ob) {
+	    ob = this.ob;	
 	}
 	
-	private static double lastResult;
-	
-	public WRBScript() {
-		
-		
+	WRBScript (){
 		
 	}
 	
@@ -121,6 +63,7 @@ public class WRBScript implements Script {
      * @param definition of the script expression(s) as a String
      * @return the result of the parsed evaluation
      */
+	private static double lastResult;
 	public double parse(String definition) throws IllegalArgumentException{
 		CharStream inputStream = CharStreams.fromString(definition+'\n');
 		WRBLexer lexer = new WRBLexer(inputStream);
@@ -226,14 +169,14 @@ public class WRBScript implements Script {
 		 if(ob.funcMemory.containsKey(name)) {
 			return ob.funcMemory.get(name);
 		} else if(MathFuncMemory.containsKey(name)) {
-			return (Function) MathFuncMemory.get(name);
+			return MathFuncMemory.get(name);
 		} 
 		 else {
 			throw new IllegalArgumentException("Funktion existiert nicht!");
 		}
 	}
 	
-	public static HashMap<String, MathFunction> getMathFunctionMap(){
+	public HashMap<String, Function> getMathFunctionMap(){
 		
 		return MathFuncMemory;
 	}

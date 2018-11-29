@@ -4,19 +4,21 @@ import java.util.HashMap;
 
 
 public class WRBFunction implements Function {
-	WRBObserver ob = new WRBObserver();
+	
+	WRBScript script;
+	WRBObserver ob;
+	
 	private String[] paramNames;
 	private WRBParser.ExprContext ctx;
 	HashMap<String, Double> scope = new HashMap<>();
 	
-	interface MathFunction{
-		double eval(final double... args);
-	}
-	
-	public WRBFunction(String[] paramNames, WRBParser.ExprContext ctx, HashMap<String, Double> varMemory) {
+
+	public WRBFunction(String[] paramNames, WRBParser.ExprContext ctx, HashMap<String, Double> varMemory, WRBScript script, WRBObserver ob) {
 		this.paramNames = paramNames;
 		this.ctx = ctx;
 		ob.varMemory = varMemory;
+		this.script = script;
+		this.ob = ob;
 		
 	}
 	

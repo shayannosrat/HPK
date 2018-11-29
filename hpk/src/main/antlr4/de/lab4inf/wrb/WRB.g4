@@ -15,9 +15,7 @@ run
 statement 
 	: exp=expr (NEWLINE | END)																
 	| a=assignVar (NEWLINE | END)					
-	| f=assignFunc (NEWLINE | END)	
-	| assignMatrix (NEWLINE | END)
-	| m=matrixMult (NEWLINE | END)					
+	| f=assignFunc (NEWLINE | END)					
 	;
 
 expr 
@@ -101,19 +99,6 @@ assignVar
 	: i=ID ASSIGN exp=expr							
 	| i=ID ASSIGN j=ID								
 	;
-	
-matrixMult
-	: a=matrix '*' b=matrix
-	;
-	
-assignMatrix
-	: i=ID ASSIGN m=matrix
-	;
-	
-vector
-	: '{' SCI_NO(','SCI_NO)* '}';
-matrix
-	: '{' vector(','vector)* '}';
 	
 //	
 // LEXER RULES

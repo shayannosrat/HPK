@@ -1,4 +1,4 @@
-// Generated from de\lab4inf\wrb\WRB.g4 by ANTLR 4.7
+// Generated from de/lab4inf/wrb/WRB.g4 by ANTLR 4.7
 package de.lab4inf.wrb;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -239,54 +239,6 @@ public class WRBBaseListener implements WRBListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitAssignVar(WRBParser.AssignVarContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterMatrixMult(WRBParser.MatrixMultContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitMatrixMult(WRBParser.MatrixMultContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterAssignMatrix(WRBParser.AssignMatrixContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitAssignMatrix(WRBParser.AssignMatrixContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterVector(WRBParser.VectorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitVector(WRBParser.VectorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterMatrix(WRBParser.MatrixContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitMatrix(WRBParser.MatrixContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
